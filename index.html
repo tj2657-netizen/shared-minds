@@ -1,14 +1,49 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+    <portfolio-header></portfolio-header>
+    <main>
+        <h1 class="main-heading">My Work</h1>
+        <section id="projects">
+            <project-card 
+                project-title="Awesome Project 1" 
+                project-description="A brief description of this awesome project. It does amazing things!" 
+                project-link="#">
+            </project-card>
+            <project-card 
+                project-title="Fantastic Project 2" 
+                project-description="This project is even more fantastic. Check it out." 
+                project-link="#">
+            </project-card>
+             <project-card 
+                project-title="Awesome Project 3" 
+                project-description="A brief description of this awesome project. It does amazing things!" 
+                project-link="#">
+            </project-card>
+            <project-card 
+                project-title="Fantastic Project 4" 
+                project-description="This project is even more fantastic. Check it out." 
+                project-link="#">
+            </project-card>
+        </section>
+    </main>
+    <portfolio-footer></portfolio-footer>
+
+    <template id="project-card-template">
+        <div class="project-card">
+            <h3 class="project-title"></h3>
+            <p class="project-description"></p>
+            <a class="project-link" href="#">View Project</a>
+        </div>
+    </template>
+
+    <script src="main.js"></script>
 </body>
 </html>

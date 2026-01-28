@@ -1,1 +1,59 @@
-/* Add styles here */
+
+:root {
+    --primary-color: #333;
+    --secondary-color: #f4f4f4;
+    --accent-color: #007bff;
+    --text-color: #333;
+    --background-color: #fff;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: sans-serif;
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.main-heading {
+  text-align: center;
+  font-size: 2.5rem;
+  margin: 2rem 0;
+}
+
+#projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.project-card {
+    background-color: var(--secondary-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    padding: 1.5rem;
+    transition: transform 0.2s;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+}
+
+.project-title {
+    font-size: 1.5rem;
+    margin-top: 0;
+}
+
+.project-description {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.project-link {
+    display: inline-block;
+    margin-top: 1rem;
+    text-decoration: none;
+    color: var(--accent-color);
+    font-weight: bold;
+}
