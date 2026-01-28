@@ -1,49 +1,21 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio</title>
+    <title>My App</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <portfolio-header></portfolio-header>
-    <main>
-        <h1 class="main-heading">My Work</h1>
-        <section id="projects">
-            <project-card 
-                project-title="Awesome Project 1" 
-                project-description="A brief description of this awesome project. It does amazing things!" 
-                project-link="#">
-            </project-card>
-            <project-card 
-                project-title="Fantastic Project 2" 
-                project-description="This project is even more fantastic. Check it out." 
-                project-link="#">
-            </project-card>
-             <project-card 
-                project-title="Awesome Project 3" 
-                project-description="A brief description of this awesome project. It does amazing things!" 
-                project-link="#">
-            </project-card>
-            <project-card 
-                project-title="Fantastic Project 4" 
-                project-description="This project is even more fantastic. Check it out." 
-                project-link="#">
-            </project-card>
-        </section>
-    </main>
-    <portfolio-footer></portfolio-footer>
+    <button id="open-modal-btn">Open Modal</button>
 
-    <template id="project-card-template">
-        <div class="project-card">
-            <h3 class="project-title"></h3>
-            <p class="project-description"></p>
-            <a class="project-link" href="#">View Project</a>
+    <div id="my-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <p>This is a test window.</p>
         </div>
-    </template>
+    </div>
 
-    <script src="main.js"></script>
+    <script src="main.js" type="module"></script>
 </body>
 </html>

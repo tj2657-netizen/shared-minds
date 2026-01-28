@@ -17,22 +17,24 @@ This document outlines the plan for creating a modern, single-page portfolio web
 *   **Header:** A custom header component (`<portfolio-header>`) containing the developer's name and navigation links.
 *   **Projects Section:** A section to showcase projects. Each project will be displayed in a custom card component (`<project-card>`).
 *   **Footer:** A custom footer component (`<portfolio-footer>`) with social media links and copyright information.
+*   **Modal Component:** A reusable modal window for displaying additional information.
 
 ## Current Plan
 
+### Create a Reusable Modal Component
+
 1.  **`index.html`:**
-    *   Set up the basic HTML structure with `<header>`, `<main>`, and `<footer>` sections.
-    *   Create `<template>` elements for the `project-card` component.
-    *   Replace the default "Hello World" with custom element tags for the portfolio.
+    *   Add the HTML structure for the modal, including a modal background, content area, and a close button.
+    *   Add a button to trigger the opening of the modal.
 
 2.  **`style.css`:**
-    *   Define a modern and responsive design for the portfolio.
-    *   Use CSS variables for colors and fonts to make theming easier.
-    *   Style the custom elements and general layout.
+    *   Style the modal to be hidden by default.
+    *   Create a class to display the modal when active.
+    *   Style the modal background to create an overlay effect.
+    *   Style the modal content area and close button.
 
 3.  **`main.js`:**
-    *   Create and define the following custom elements (Web Components):
-        *   `portfolio-header`: For the site's header.
-        *   `project-card`: To display individual portfolio projects.
-        *   `portfolio-footer`: For the site's footer.
-    *   Use the `<template>` from `index.html` to populate the Shadow DOM for the `project-card` component.
+    *   Add JavaScript to handle the modal's functionality.
+    *   Create a function to open the modal.
+    *   Create a function to close the modal.
+    *   Add event listeners to the trigger button and the close button.
