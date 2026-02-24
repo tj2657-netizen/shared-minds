@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏠 Dollhouse Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏠 Dollhouse Scene Creator</h1>
+            <div class="user-input">
+                <input type="text" id="creatorName" placeholder="Enter your name">
+                <button id="saveScene">💾 Save Scene</button>
+                <button id="loadScene">📂 Load Scene</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Sidebar with draggable items -->
+            <aside class="sidebar">
+                <h2>🎨 Items</h2>
+                
+                <div class="category">
+                    <h3>🪑 Furniture</h3>
+                    <div class="item-grid">
+                        <div class="draggable-item" data-item="🛋️" draggable="true">🛋️ Sofa</div>
+                        <div class="draggable-item" data-item="🪑" draggable="true">🪑 Chair</div>
+                        <div class="draggable-item" data-item="🛏️" draggable="true">🛏️ Bed</div>
+                        <div class="draggable-item" data-item="🚪" draggable="true">🚪 Door</div>
+                        <div class="draggable-item" data-item="🪟" draggable="true">🪟 Window</div>
+                        <div class="draggable-item" data-item="📺" draggable="true">📺 TV</div>
+                        <div class="draggable-item" data-item="💡" draggable="true">💡 Lamp</div>
+                        <div class="draggable-item" data-item="🖼️" draggable="true">🖼️ Picture</div>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <h3>👨‍👩‍👧‍👦 Characters</h3>
+                    <div class="item-grid">
+                        <div class="draggable-item" data-item="👨" draggable="true">👨 Man</div>
+                        <div class="draggable-item" data-item="👩" draggable="true">👩 Woman</div>
+                        <div class="draggable-item" data-item="👶" draggable="true">👶 Baby</div>
+                        <div class="draggable-item" data-item="👧" draggable="true">👧 Girl</div>
+                        <div class="draggable-item" data-item="👦" draggable="true">👦 Boy</div>
+                        <div class="draggable-item" data-item="🐕" draggable="true">🐕 Dog</div>
+                        <div class="draggable-item" data-item="🐈" draggable="true">🐈 Cat</div>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <h3>🎁 Objects</h3>
+                    <div class="item-grid">
+                        <div class="draggable-item" data-item="🌿" draggable="true">🌿 Plant</div>
+                        <div class="draggable-item" data-item="📚" draggable="true">📚 Books</div>
+                        <div class="draggable-item" data-item="☕" draggable="true">☕ Coffee</div>
+                        <div class="draggable-item" data-item="🎨" draggable="true">🎨 Art</div>
+                        <div class="draggable-item" data-item="🎸" draggable="true">🎸 Guitar</div>
+                        <div class="draggable-item" data-item="🧸" draggable="true">🧸 Teddy</div>
+                        <div class="draggable-item" data-item="⚽" draggable="true">⚽ Ball</div>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <h3>✏️ Add Custom</h3>
+                    <input type="text" id="customText" placeholder="Add text or emoji">
+                    <button id="addText">Add Text</button>
+                </div>
+            </aside>
+
+            <!-- Main dollhouse scene area -->
+            <main class="dollhouse" id="dollhouse">
+                <div class="room-bg">
+                    <div class="wall"></div>
+                    <div class="floor"></div>
+                </div>
+            </main>
+        </div>
+
+        <div class="instructions">
+            <p>💡 <strong>How to play:</strong> Drag items from the sidebar into your dollhouse. Click items to remove them. Enter your name to save/load scenes!</p>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
