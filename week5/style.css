@@ -1,0 +1,132 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+header p {
+    font-size: 18px;
+    opacity: 0.9;
+}
+
+main {
+    padding: 40px 20px;
+}
+
+.card {
+    background: #f8f9fa;
+    padding: 30px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.card h2 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.card p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.card ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.card li {
+    color: #666;
+    padding: 8px 0;
+    line-height: 1.6;
+}
+
+.card li:before {
+    content: "✓ ";
+    color: #667eea;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+button {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+button:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+code {
+    background: #e9ecef;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    color: #d63384;
+}
+
+footer {
+    background: #f8f9fa;
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    border-top: 1px solid #e9ecef;
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 24px;
+    }
+
+    main {
+        padding: 20px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+}
