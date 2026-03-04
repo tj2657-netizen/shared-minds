@@ -1,0 +1,86 @@
+/* Frame Graph / Canvas Styles */
+
+.frame-graph-container {
+  background: rgba(30, 30, 46, 0.8);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 30px 0;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.frame-graph-container h3 {
+  color: #667eea;
+  margin: 0 0 15px 0;
+}
+
+.frame-graph {
+  flex: 1;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* D3 Graph Elements */
+
+.branch-line {
+  stroke: rgba(102, 126, 234, 0.4);
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+.node-group circle {
+  stroke: #667eea;
+  stroke-width: 2;
+  transition: all 0.3s ease;
+}
+
+.root-node-circle {
+  fill: #667eea;
+  r: 15px;
+}
+
+.branch-node {
+  fill: rgba(102, 126, 234, 0.3);
+  r: 10px;
+}
+
+.node-group:hover circle {
+  stroke-width: 3;
+  filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.6));
+}
+
+.node-group:hover .node-label {
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.node-label {
+  fill: #b0b0c0;
+  font-size: 12px;
+  pointer-events: none;
+  text-anchor: middle;
+}
+
+/* Tooltip */
+
+.tooltip {
+  position: fixed;
+  background: rgba(30, 30, 46, 0.95);
+  border: 1px solid rgba(102, 126, 234, 0.5);
+  border-radius: 6px;
+  padding: 10px;
+  color: #b0b0c0;
+  font-size: 12px;
+  max-width: 200px;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .frame-graph-container {
+    height: 300px;
+  }
+}

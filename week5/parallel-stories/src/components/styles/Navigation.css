@@ -1,0 +1,143 @@
+/* Navigation Component Styles */
+
+.story-graph {
+  background: rgba(30, 30, 46, 0.8);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+.graph-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.graph-header h3 {
+  color: #667eea;
+  margin: 0;
+  font-size: 18px;
+}
+
+.btn-superposition {
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  color: #667eea;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-superposition:hover {
+  background: rgba(102, 126, 234, 0.2);
+}
+
+.btn-superposition.active {
+  background: rgba(102, 126, 234, 0.3);
+  border-color: #667eea;
+}
+
+.node-canvas-container {
+  flex: 1;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.node-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* D3 Graph Elements */
+
+.node-canvas .link {
+  stroke: rgba(102, 126, 234, 0.3);
+  stroke-width: 2;
+}
+
+.node-canvas .node circle {
+  fill: rgba(102, 126, 234, 0.2);
+  stroke: #667eea;
+  stroke-width: 2;
+  transition: all 0.3s ease;
+}
+
+.node-canvas .root-node {
+  fill: #667eea;
+  stroke-width: 3;
+  r: 12px;
+}
+
+.node-canvas .child-node {
+  fill: rgba(102, 126, 234, 0.3);
+  stroke: #667eea;
+  stroke-width: 2;
+}
+
+.node-canvas .node:hover circle {
+  r: 14;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.6));
+}
+
+.node-canvas .node.alt-branch circle {
+  opacity: 0.6;
+}
+
+.node-canvas .node-label {
+  fill: #b0b0c0;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.tooltip {
+  position: fixed;
+  background: rgba(30, 30, 46, 0.95);
+  border: 1px solid rgba(102, 126, 234, 0.5);
+  border-radius: 6px;
+  padding: 10px;
+  color: #b0b0c0;
+  font-size: 12px;
+  max-width: 250px;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.graph-footer {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(102, 126, 234, 0.2);
+  color: #7a7a8a;
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .story-graph {
+    height: 400px;
+  }
+
+  .graph-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .btn-superposition {
+    width: 100%;
+    text-align: center;
+  }
+}

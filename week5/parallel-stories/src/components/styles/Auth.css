@@ -1,0 +1,261 @@
+/* Authentication Component Styles */
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.auth-card {
+  background: rgba(30, 30, 46, 0.95);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 12px;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.auth-card h1 {
+  color: #667eea;
+  font-size: 28px;
+  margin: 0 0 10px 0;
+  text-align: center;
+}
+
+.auth-subtitle {
+  color: #b0b0c0;
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  color: #b0b0c0;
+  font-size: 14px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 6px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group small {
+  display: block;
+  color: #7a7a8a;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.error-message {
+  background: rgba(255, 76, 76, 0.1);
+  border: 1px solid rgba(255, 76, 76, 0.5);
+  color: #ff6b6b;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  margin-top: 10px;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+  background: rgba(102, 126, 234, 0.2);
+  color: #667eea;
+  border: 1px solid #667eea;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(102, 126, 234, 0.3);
+}
+
+.btn-danger {
+  background: rgba(255, 76, 76, 0.1);
+  color: #ff6b6b;
+  border: 1px solid #ff6b6b;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: rgba(255, 76, 76, 0.2);
+}
+
+.btn-small {
+  padding: 8px 12px;
+  font-size: 12px;
+  width: auto;
+}
+
+.auth-divider {
+  text-align: center;
+  color: #7a7a8a;
+  margin: 25px 0;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.auth-link {
+  text-align: center;
+  color: #7a7a8a;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+.auth-link a {
+  color: #667eea;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.auth-link a:hover {
+  color: #b0b0c0;
+}
+
+/* User Profile */
+
+.user-profile {
+  position: relative;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 20px;
+  padding: 6px 12px;
+  cursor: pointer;
+  color: #b0b0c0;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.profile-button:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-name {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .user-name {
+    display: inline;
+  }
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: rgba(30, 30, 46, 0.95);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 10px;
+  min-width: 250px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.profile-info h3 {
+  color: #667eea;
+  margin: 0 0 5px 0;
+}
+
+.profile-info p {
+  color: #7a7a8a;
+  font-size: 12px;
+  margin: 0 0 15px 0;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 20px;
+  padding: 15px 0;
+  border-top: 1px solid rgba(102, 126, 234, 0.2);
+  border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+  margin-bottom: 15px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  color: #667eea;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.stat-label {
+  color: #7a7a8a;
+  font-size: 12px;
+}
+
+.profile-dropdown .btn {
+  width: 100%;
+}
