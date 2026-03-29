@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Inner Space</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="scene-root"></div>
+
+    <aside class="hud">
+      <h1>3D Inner Space</h1>
+      <p>Drag to orbit. Scroll to zoom. Hover creatures to energize them. Click to scatter the flock.</p>
+    </aside>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.165.0/build/three.module.js"
+        }
+      }
+    </script>
+
+    <script type="module" src="main.js"></script>
+  </body>
+</html>
