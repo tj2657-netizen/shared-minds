@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream of Consciousness</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Control Panel -->
+    <div class="control-panel">
+        <div class="control-group">
+            <label for="emotional-value">Emotional Value:</label>
+            <input type="range" id="emotional-value" min="-100" max="100" value="0">
+            <span id="emotional-display">0</span>
+        </div>
+
+        <div class="control-group">
+            <label for="intensity">Intensity:</label>
+            <input type="range" id="intensity" min="20" max="100" value="50">
+            <span id="intensity-display">50</span>
+        </div>
+
+        <button id="submit-btn">Create Thought</button>
+        <button id="random-btn">Random Thought</button>
+        <button id="clear-btn">Clear All</button>
+    </div>
+
+    <!-- Main Canvas -->
+    <canvas id="canvas"></canvas>
+
+    <!-- Script -->
+    <script src="script.js"></script>
+</body>
+</html>
