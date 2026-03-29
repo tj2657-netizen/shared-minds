@@ -1,103 +1,32 @@
+/* Week 1 Styles */
 
-:root {
-    --primary-color: #333;
-    --secondary-color: #f4f4f4;
-    --accent-color: #007bff;
-    --text-color: #333;
-    --background-color: #fff;
-    --shadow-color: rgba(0, 0, 0, 0.1);
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    font-family: sans-serif;
-    margin: 0;
-    background-color: var(--background-color);
-    color: var(--text-color);
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
 }
 
-.main-heading {
-  text-align: center;
-  font-size: 2.5rem;
-  margin: 2rem 0;
-}
-
-#projects {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    padding: 2rem;
-}
-
-.project-card {
-    background-color: var(--secondary-color);
-    border-radius: 8px;
-    box-shadow: 0 4px 8px var(--shadow-color);
-    padding: 1.5rem;
-    transition: transform 0.2s;
-}
-
-.project-card:hover {
-    transform: translateY(-5px);
-}
-
-.project-title {
-    font-size: 1.5rem;
-    margin-top: 0;
-}
-
-.project-description {
-    font-size: 1rem;
-    line-height: 1.5;
-}
-
-.project-link {
-    display: inline-block;
-    margin-top: 1rem;
-    text-decoration: none;
-    color: var(--accent-color);
-    font-weight: bold;
-}
-
-/* Modal styles */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
+.container {
+    max-width: 800px;
+    margin: 50px auto;
     padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-    animation-name: animatetop;
-    animation-duration: 0.4s
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Add Animation */
-@keyframes animatetop {
-    from {top: -300px; opacity: 0} 
-    to {top: 0; opacity: 1}
+h1 {
+    color: #2c3e50;
+    margin-bottom: 15px;
 }
 
-.close-btn {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close-btn:hover,
-.close-btn:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+p {
+    color: #555;
+    line-height: 1.6;
 }

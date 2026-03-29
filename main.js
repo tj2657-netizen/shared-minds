@@ -1,17 +1,5 @@
-const modal = document.getElementById("my-modal");
-const openModalBtn = document.getElementById("open-modal-btn");
-const closeBtn = document.getElementsByClassName("close-btn")[0];
+// Week 1 JavaScript
 
-openModalBtn.onclick = function() {
-    modal.style.display = "block";
-}
+console.log('Week 1 - Script loaded!');
 
-closeBtn.onclick = function() {
-    modal.style.display = "none";
-}
-
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
+// Add your code here
