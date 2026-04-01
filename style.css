@@ -1,32 +1,126 @@
-/* Week 1 Styles */
-
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #0a1128;
+  overflow: hidden;
+  color: #fff;
 }
 
-.container {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+#canvas-container {
+  width: 100vw;
+  height: 100vh;
 }
 
-h1 {
-    color: #2c3e50;
-    margin-bottom: 15px;
+.ui-panel {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: rgba(10, 17, 40, 0.85);
+  border: 2px solid #00d4ff;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 320px;
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
 }
 
-p {
-    color: #555;
-    line-height: 1.6;
+.ui-panel h1 {
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.btn {
+  padding: 10px 12px;
+  background: linear-gradient(135deg, #00a8cc, #005a7a);
+  color: #fff;
+  border: 1px solid #00d4ff;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background: linear-gradient(135deg, #00d4ff, #00a8cc);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.emotion-status {
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid #00d4ff;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.emotion-status p {
+  margin: 4px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #00ff88;
+}
+
+#emotionDisplay {
+  font-size: 1rem;
+  color: #00d4ff;
+}
+
+#confidenceDisplay {
+  font-size: 0.8rem;
+  color: #a0d4ff;
+}
+
+.camera-hint {
+  font-size: 0.75rem;
+  color: #ffd166;
+  margin-top: 6px;
+}
+
+.info {
+  font-size: 0.85rem;
+  color: #a0d4ff;
+  line-height: 1.6;
+}
+
+.info p {
+  margin: 6px 0;
+}
+
+#stats {
+  font-weight: 600;
+  color: #00d4ff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ui-panel {
+    max-width: 280px;
+    padding: 16px;
+  }
+
+  .controls {
+    grid-template-columns: 1fr;
+  }
 }
