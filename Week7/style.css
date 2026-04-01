@@ -1,13 +1,4 @@
-:root {
-  --ink: #efefe4;
-  --panel: rgba(6, 11, 17, 0.62);
-  --panel-border: rgba(173, 216, 230, 0.25);
-  --accent: #9ee3df;
-}
 
-* {
-  box-sizing: border-box;
-}
 
 html,
 body {
