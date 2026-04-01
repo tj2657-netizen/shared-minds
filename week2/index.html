@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Baby Thought Organizer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Full-screen canvas for thought painting -->
+  <canvas id="thoughtCanvas"></canvas>
+
+  <!-- Control panel -->
+  <div class="control-panel">
+    <h1>🧠 Thought Organizer</h1>
+    
+    <div class="mode-selector">
+      <button id="freeThoughtMode" class="mode-btn active">🎨 Free Paint</button>
+      <button id="flowMode" class="mode-btn">🎵 Flow Mode</button>
+    </div>
+
+    <div class="info">
+      <p>🖱️ <strong>Left zone:</strong> Calm thoughts</p>
+      <p>💭 <strong>Middle zone:</strong> Imagination</p>
+      <p>📍 <strong>Right zone:</strong> Memory</p>
+      <p>✨ <strong>Mixing:</strong> Bubbles blend when they meet!</p>
+    </div>
+
+    <button id="clearButton" class="action-btn">Clear Thoughts</button>
+  </div>
+
+  <!-- Zone labels overlay -->
+  <div class="zone-labels">
+    <div class="zone-label zone-calm">Calm</div>
+    <div class="zone-label zone-imagination">Imagination</div>
+    <div class="zone-label zone-memory">Memory</div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

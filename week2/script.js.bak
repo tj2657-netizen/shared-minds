@@ -1,0 +1,490 @@
+// ====================================
+// BABY THOUGHT ORGANIZER
+// Canvas-based interactive thought visualization
+// ====================================
+
+// --- DOM Elements ---
+const canvas = document.getElementById('thoughtCanvas');
+const ctx = canvas.getContext('2d');
+
+const freeThoughtBtn = document.getElementById('freeThoughtMode');
+const flowModeBtn = document.getElementById('flowMode');
+const clearBtn = document.getElementById('clearButton');
+
+// --- Canvas Setup ---
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// --- Global State ---
+const state = {
+  mode: 'free', // 'free' or 'flow'
+  intensity: 0.7,
+  isMouseDown: false,
+  mouseX: 0,
+  mouseY: 0,
+  thoughts: [],
+};
+
+// --- Zone Configuration ---
+const zones = {
+  calm: {
+    x: 0,
+    y: canvas.height / 2,
+    width: canvas.width / 2,
+    height: canvas.height / 2,
+    color: 'rgba(100, 200, 150, 0.15)',
+    motionStyle: 'slow-drift',
+    emotion: 'calm',
+  },
+  memory: {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    width: canvas.width / 2,
+    height: canvas.height / 2,
+    color: 'rgba(255, 220, 100, 0.15)',
+    motionStyle: 'gentle-fade',
+    emotion: 'memory',
+  },
+  imagination: {
+    x: 0,
+    y: 0,
+    width: canvas.width,
+    height: canvas.height / 2,
+    color: 'rgba(200, 150, 255, 0.15)',
+    motionStyle: 'swirl',
+    emotion: 'imagination',
+  },
+};
+
+// --- Thought Class ---
+class Thought {
+  constructor(x, y, zone) {
+    this.x = x;
+    this.y = y;
+    this.originalX = x;
+    this.originalY = y;
+    this.zone = zone;
+    this.radius = Math.random() * 4 + 2;
+    this.maxRadius = this.radius * 2;
+    this.vx = (Math.random() - 0.5) * 2;
+    this.vy = (Math.random() - 0.5) * 2;
+    this.age = 0;
+    this.lifetime = Math.random() * 8000 + 8000; // 8-16 seconds (much longer)
+    this.opacity = 0.8;
+    this.hovered = false;
+    this.time = 0;
+    this.shimmerPhase = Math.random() * Math.PI * 2;
+    this.baseColor = this.getColorForZone(zone);
+  }
+
+  getColorForZone(zone) {
+    const colors = {
+      calm: { r: 100, g: 200, b: 150 }, // Light green
+      memory: { r: 255, g: 220, b: 100 }, // Yellow
+      imagination: { r: 200, g: 150, b: 255 }, // Light purple
+    };
+    return colors[zone] || colors.calm;
+  }
+
+  update(deltaTime) {
+    this.time += deltaTime;
+    this.age += deltaTime;
+
+    // Motion behavior based on zone
+    if (this.zone === 'calm') {
+      this.updateCalm();
+    } else if (this.zone === 'imagination') {
+      this.updateImagination();
+    } else if (this.zone === 'memory') {
+      this.updateMemory();
+    }
+
+    // Fade out effect
+    const fadeStart = this.lifetime * 0.7;
+    if (this.age > fadeStart) {
+      this.opacity = 0.8 * (1 - (this.age - fadeStart) / (this.lifetime - fadeStart));
+    }
+
+    // Hover effect
+    if (this.hovered) {
+      this.radius = Math.min(this.radius + 0.5, this.maxRadius * 1.5);
+    } else {
+      this.radius = Math.max(this.radius - 0.3, this.maxRadius * 0.5);
+    }
+  }
+
+  updateCalm() {
+    // Slow, gentle drifting
+    this.vx *= 0.98;
+    this.vy *= 0.98;
+    this.vx += (Math.random() - 0.5) * 0.3;
+    this.vy += (Math.random() - 0.5) * 0.3;
+
+    this.x += this.vx * 0.5;
+    this.y += this.vy * 0.5;
+
+    // Keep in zone
+    this.keepInZone('calm');
+  }
+
+  updateImagination() {
+    // Swirl motion (circular patterns)
+    const angle = Math.atan2(this.y - this.originalY, this.x - this.originalX);
+    const distance = Math.hypot(this.x - this.originalX, this.y - this.originalY);
+
+    this.x = this.originalX + Math.cos(angle + this.time * 0.005) * (distance + 0.5);
+    this.y = this.originalY + Math.sin(angle + this.time * 0.005) * (distance + 0.5);
+
+    this.keepInZone('imagination');
+  }
+
+  updateMemory() {
+    // Gentle fade and slight vertical drift
+    this.y += 0.2; // Slow downward drift like fading memory
+    this.opacity *= 0.998;
+
+    this.keepInZone('memory');
+  }
+
+  keepInZone(zoneName) {
+    const zone = zones[zoneName];
+    if (this.x < zone.x) this.x = zone.x;
+    if (this.x > zone.x + zone.width) this.x = zone.x + zone.width;
+    if (this.y < zone.y) this.y = zone.y;
+    if (this.y > zone.y + zone.height) this.y = zone.y + zone.height;
+  }
+
+  bounceInZone(zoneName) {
+    const zone = zones[zoneName];
+    if (this.x < zone.x || this.x > zone.x + zone.width) this.vx *= -1;
+    if (this.y < zone.y || this.y > zone.y + zone.height) this.vy *= -1;
+    this.keepInZone(zoneName);
+  }
+
+  draw(ctx) {
+    const c = this.baseColor;
+    const opacity = this.opacity;
+    const shimmer = Math.sin(this.shimmerPhase + this.time * 0.01) * 0.3 + 0.7; // Animated shimmer
+
+    // Ultra outer glow (very large)
+    ctx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${opacity * 0.2})`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius + 15, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Outer glow (large)
+    ctx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${opacity * 0.35})`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius + 10, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Middle glow layer
+    ctx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${opacity * 0.6})`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius + 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Inner glow
+    ctx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${opacity * 0.8})`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius + 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Main thought blob (bright core)
+    ctx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${opacity})`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Animated shimmer effect (moves and pulses)
+    const shimmerRadius = this.radius * (0.3 + shimmer * 0.2);
+    const shimmerAngle = this.shimmerPhase + this.time * 0.008;
+    const shimmerX = this.x + Math.cos(shimmerAngle) * this.radius * 0.4;
+    const shimmerY = this.y + Math.sin(shimmerAngle) * this.radius * 0.4;
+    ctx.fillStyle = `rgba(255, 255, 255, ${opacity * shimmer * 0.6})`;
+    ctx.beginPath();
+    ctx.arc(shimmerX, shimmerY, shimmerRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Extra bright core highlight
+    ctx.fillStyle = `rgba(255, 255, 255, ${opacity * 0.5 * shimmer})`;
+    ctx.beginPath();
+    ctx.arc(this.x - this.radius * 0.2, this.y - this.radius * 0.2, this.radius * 0.25, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Enhanced multi-layer outer glow stroke
+    ctx.strokeStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${opacity * 0.6})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius + 12, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.strokeStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${opacity * 0.8})`;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius + 3, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  isAlive() {
+    return this.age < this.lifetime;
+  }
+
+  isMouseOver(mx, my) {
+    const dx = this.x - mx;
+    const dy = this.y - my;
+    return Math.hypot(dx, dy) < this.radius + 10;
+  }
+}
+
+// ====================================
+// RENDERING & ANIMATION
+// ====================================
+
+let lastTime = Date.now();
+
+function render() {
+  const now = Date.now();
+  const deltaTime = now - lastTime;
+  lastTime = now;
+
+  // Clear canvas completely
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw zone backgrounds (subtle)
+  drawZones();
+
+  // Update and draw thoughts
+  state.thoughts = state.thoughts.filter((thought) => thought.isAlive());
+
+  for (let thought of state.thoughts) {
+    thought.update(deltaTime);
+  }
+
+  // Detect and visualize thought mixing from different zones
+  detectThoughtMixing();
+
+  // Draw all thoughts
+  for (let thought of state.thoughts) {
+    thought.draw(ctx);
+  }
+
+  requestAnimationFrame(render);
+}
+
+function detectThoughtMixing() {
+  // Check for bubbles from different zones in close proximity
+  for (let i = 0; i < state.thoughts.length; i++) {
+    for (let j = i + 1; j < state.thoughts.length; j++) {
+      const thought1 = state.thoughts[i];
+      const thought2 = state.thoughts[j];
+
+      const dx = thought2.x - thought1.x;
+      const dy = thought2.y - thought1.y;
+      const distance = Math.hypot(dx, dy);
+      const minDistance = thought1.radius + thought2.radius + 15;
+
+      // Check if bubbles are close and from different zones
+      if (distance < minDistance && thought1.zone !== thought2.zone) {
+        // Draw mixing connection
+        drawMixingEffect(thought1, thought2, distance, minDistance);
+
+        // Slightly attract bubbles towards each other
+        const attractForce = 0.1;
+        thought1.vx += (dx / distance) * attractForce;
+        thought1.vy += (dy / distance) * attractForce;
+        thought2.vx -= (dx / distance) * attractForce;
+        thought2.vy -= (dy / distance) * attractForce;
+      }
+    }
+  }
+}
+
+function drawMixingEffect(thought1, thought2, distance, minDistance) {
+  const blendFactor = 1 - (distance / minDistance); // 0 to 1
+  
+  // Blend the colors
+  const c1 = thought1.baseColor;
+  const c2 = thought2.baseColor;
+  const blendedR = Math.round(c1.r * (1 - blendFactor) + c2.r * blendFactor);
+  const blendedG = Math.round(c1.g * (1 - blendFactor) + c2.g * blendFactor);
+  const blendedB = Math.round(c1.b * (1 - blendFactor) + c2.b * blendFactor);
+
+  // Drawing connecting line with blended color
+  ctx.strokeStyle = `rgba(${blendedR}, ${blendedG}, ${blendedB}, ${0.4 * blendFactor})`;
+  ctx.lineWidth = 2 + blendFactor * 2;
+  ctx.lineCap = 'round';
+  
+  ctx.beginPath();
+  ctx.moveTo(thought1.x, thought1.y);
+  ctx.lineTo(thought2.x, thought2.y);
+  ctx.stroke();
+
+  // Draw glowing particles at midpoint showing the blend
+  const midX = (thought1.x + thought2.x) / 2;
+  const midY = (thought1.y + thought2.y) / 2;
+
+  for (let i = 0; i < 3; i++) {
+    const sparkAngle = (Math.random() * Math.PI * 2);
+    const sparkDist = Math.random() * 10;
+    const sparkX = midX + Math.cos(sparkAngle) * sparkDist;
+    const sparkY = midY + Math.sin(sparkAngle) * sparkDist;
+
+    ctx.fillStyle = `rgba(${blendedR}, ${blendedG}, ${blendedB}, ${0.6 * blendFactor})`;
+    ctx.beginPath();
+    ctx.arc(sparkX, sparkY, 1.5 + blendFactor * 1.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Create a blended bubble at the meeting point (only when very close)
+  if (blendFactor > 0.7) {
+    const blendedRadius = (thought1.radius + thought2.radius) / 2 * blendFactor * 0.6;
+    ctx.fillStyle = `rgba(${blendedR}, ${blendedG}, ${blendedB}, ${0.3 * blendFactor})`;
+    ctx.beginPath();
+    ctx.arc(midX, midY, blendedRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = `rgba(${blendedR}, ${blendedG}, ${blendedB}, ${0.5 * blendFactor})`;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(midX, midY, blendedRadius, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+}
+
+function drawZones() {
+  // Draw zone backgrounds very subtly
+  for (let zoneName in zones) {
+    const zone = zones[zoneName];
+    ctx.fillStyle = zone.color;
+    ctx.fillRect(zone.x, zone.y, zone.width, zone.height);
+  }
+
+  // Draw zone borders (very subtle)
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+  ctx.lineWidth = 2;
+
+  // Horizontal line (dividing imagination from calm/memory)
+  ctx.beginPath();
+  ctx.moveTo(0, canvas.height / 2);
+  ctx.lineTo(canvas.width, canvas.height / 2);
+  ctx.stroke();
+
+  // Vertical line (dividing calm from memory)
+  ctx.beginPath();
+  ctx.moveTo(canvas.width / 2, canvas.height / 2);
+  ctx.lineTo(canvas.width / 2, canvas.height);
+  ctx.stroke();
+}
+
+function getZoneAtPoint(x, y) {
+  if (y < canvas.height / 2) return 'imagination';
+  if (x < canvas.width / 2) return 'calm';
+  return 'memory';
+}
+
+// ====================================
+// MOUSE INTERACTION
+// ====================================
+
+document.addEventListener('mousemove', (e) => {
+  state.mouseX = e.clientX;
+  state.mouseY = e.clientY;
+
+  // Update hover state for thoughts
+  for (let thought of state.thoughts) {
+    thought.hovered = thought.isMouseOver(e.clientX, e.clientY);
+  }
+});
+
+document.addEventListener('mousedown', (e) => {
+  if (e.target === canvas) {
+    state.isMouseDown = true;
+  }
+});
+
+document.addEventListener('mouseup', () => {
+  state.isMouseDown = false;
+});
+
+document.addEventListener('mousemove', (e) => {
+  if (state.isMouseDown && state.mode === 'free' && e.target === canvas) {
+    // Create thought at cursor
+    const zone = getZoneAtPoint(e.clientX, e.clientY);
+    for (let i = 0; i < 2; i++) {
+      const thought = new Thought(
+        e.clientX + (Math.random() - 0.5) * 10,
+        e.clientY + (Math.random() - 0.5) * 10,
+        zone
+      );
+      // Lifetime already set in constructor (8-16 seconds)
+      state.thoughts.push(thought);
+    }
+  }
+});
+
+// ====================================
+// UI CONTROLS
+// ====================================
+
+freeThoughtBtn.addEventListener('click', () => {
+  state.mode = 'free';
+  freeThoughtBtn.classList.add('active');
+  flowModeBtn.classList.remove('active');
+  console.log('Mode: Free Paint');
+});
+
+flowModeBtn.addEventListener('click', () => {
+  state.mode = 'flow';
+  flowModeBtn.classList.add('active');
+  freeThoughtBtn.classList.remove('active');
+  startFlowMode();
+  console.log('Mode: Flow');
+});
+
+clearBtn.addEventListener('click', () => {
+  state.thoughts = [];
+  console.log('Thoughts cleared');
+});
+
+// ====================================
+// FOLLOW MODE (Auto-generate thoughts based on time)
+// ====================================
+
+function startFlowMode() {
+  // Auto-generate thoughts rhythmically
+  const interval = setInterval(() => {
+    if (state.mode !== 'flow') {
+      clearInterval(interval);
+      return;
+    }
+
+    const zoneNames = ['calm', 'memory', 'imagination'];
+    const randomZoneName = zoneNames[Math.floor(Math.random() * zoneNames.length)];
+    const zone = zones[randomZoneName];
+
+    const x = zone.x + Math.random() * zone.width;
+    const y = zone.y + Math.random() * zone.height;
+
+    for (let i = 0; i < 3; i++) {
+      const thought = new Thought(x + (Math.random() - 0.5) * 50, y + (Math.random() - 0.5) * 50, randomZoneName);
+      thought.lifetime *= state.intensity * 2; // Longer lasting in follow mode
+      state.thoughts.push(thought);
+    }
+  }, 500);
+}
+
+// ====================================
+// WINDOW RESIZE
+// ====================================
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+// ====================================
+// START RENDERING
+// ====================================
+
+render();
