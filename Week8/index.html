@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Three.js Underwater Cave Aquarium</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Hidden webcam for face detection -->
+  <video id="faceVideo" playsinline muted style="display: none;"></video>
+  
+  <div id="canvas-container"></div>
+  
+  <div class="ui-panel">
+    <h1>Underwater Cave Aquarium</h1>
+    <div class="emotion-status">
+      <p id="emotionDisplay">😊 Emotion: Detecting...</p>
+      <p id="confidenceDisplay">Confidence: --</p>
+      <p id="cameraHint" class="camera-hint">Click "Enable Camera" if permission is blocked.</p>
+    </div>
+    <div class="controls">
+      <button id="enableCamera" class="btn">Enable Camera</button>
+      <button id="toggleAutoRotate" class="btn">Toggle Auto Rotate</button>
+      <button id="toggleLighting" class="btn">Toggle Lighting</button>
+      <button id="spawnFish" class="btn">Spawn Fish</button>
+      <button id="resetScene" class="btn">Reset Scene</button>
+    </div>
+    <div class="info">
+      <p>😊 Smile = +Fish | 😢 Sad = -Fish</p>
+      <p>🖱️ Drag to rotate | 🔍 Scroll to zoom | 🎮 Camera auto-rotates</p>
+      <p id="stats">Fish: 0 | FPS: 60</p>
+    </div>
+  </div>
+
+  <!-- Three.js from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- ml5.js for face detection and emotion recognition -->
+  <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
