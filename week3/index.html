@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week3 - AI Paint Story Space</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="storyCanvas"></canvas>
+
+  <div class="ui">
+    <h1>AI Paint + Story Space</h1>
+
+    <div class="row">
+      <button id="generateBtn">Generate</button>
+      <button id="placeModeBtn" class="active">Place: On</button>
+      <button id="duplicateBtn">Duplicate</button>
+      <button id="deleteBtn">Delete</button>
+    </div>
+
+    <div class="row">
+      <button id="saveBtn">Save Scene</button>
+      <button id="clearBtn">Clear Scene</button>
+      <button id="shuffleBtn">Shuffle Layout</button>
+    </div>
+
+    <div class="controls">
+      <label>Generate Count
+        <input id="countSlider" type="range" min="2" max="14" value="6" />
+      </label>
+      <label>Size
+        <input id="sizeSlider" type="range" min="20" max="220" value="80" />
+      </label>
+      <label>Rotation
+        <input id="rotationSlider" type="range" min="0" max="360" value="0" />
+      </label>
+      <label>Hue
+        <input id="hueSlider" type="range" min="0" max="360" value="200" />
+      </label>
+    </div>
+
+    <p class="hint">
+      Explicit: click, drag, resize, rotate, duplicate.
+      Implicit: elements drift, pulse, and group by color.
+    </p>
+    <p class="status" id="statusText">Ready to generate a colorful burst.</p>
+  </div>
+
+  <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

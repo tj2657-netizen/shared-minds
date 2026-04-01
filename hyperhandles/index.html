@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HyperHandles - Spatial Social Prototype</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="spaceCanvas"></canvas>
+
+  <div class="garden-head">
+    <h1>HyperHandles Garden</h1>
+    <p>Type to move your flower through idea-space.</p>
+  </div>
+
+  <div class="garden-dock">
+    <input id="creatorInput" type="text" placeholder="Whisper a thought to move your flower..." />
+    <div class="petal-actions">
+      <button id="seedBtn" class="petal seed" title="Grow simulated flowers">Seed</button>
+      <button id="bloomBtn" class="petal bloom active" title="Toggle similarity vines">Bloom</button>
+      <button id="pruneBtn" class="petal prune" title="Clear all but your flower">Prune</button>
+    </div>
+  </div>
+
+  <div class="selected-chip" id="selectedInfo">
+    <strong>No flower selected</strong>
+    <p>Click any flower to inspect it.</p>
+  </div>
+
+  <div id="hoverTip" class="hover-tip hidden"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
