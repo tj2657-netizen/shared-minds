@@ -6,7 +6,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0x001a33, 1);
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFShadowShadowMap;
 document.getElementById('canvas-container').appendChild(renderer.domElement);
 
 camera.position.set(0, 5, 15);
@@ -60,33 +60,8 @@ async function setupFaceDetection() {
     });
     
     faceVideo.srcObject = stream;
-    faceVideo.width = 640;
-    faceVideo.height = 480;
-    faceVideo.style.width = '640px';
-    faceVideo.style.height = '480px';
-
-    await new Promise((resolve) => {
-      if (faceVideo.readyState >= 1 && faceVideo.videoWidth > 0 && faceVideo.videoHeight > 0) {
-        resolve();
-        return;
-      }
-
-      const onLoadedMetadata = () => {
-        faceVideo.removeEventListener('loadedmetadata', onLoadedMetadata);
-        resolve();
-      };
-
-      faceVideo.addEventListener('loadedmetadata', onLoadedMetadata);
-    });
-
-    await faceVideo.play();
+    faceVideo.play();
     hintEl.textContent = 'Camera connected. Face detection is running.';
-
-    if (!window.ml5 || typeof ml5.faceApi !== 'function') {
-      emotionEl.textContent = '❌ ml5 faceApi unavailable';
-      hintEl.textContent = 'Use the bundled ml5 0.12.2 script (faceApi-compatible) and reload the page.';
-      return;
-    }
     
     // Initialize ml5 faceapi with callback
     state.faceDetector = ml5.faceApi(faceVideo, modelLoaded);
@@ -123,25 +98,21 @@ function startFaceDetection() {
   
   // Get video element
   const video = document.getElementById('faceVideo');
-  if (!video || video.readyState < 2 || video.videoWidth === 0 || video.videoHeight === 0) {
-    requestAnimationFrame(() => startFaceDetection());
-    return;
-  }
   
-  // Use the array-based detect path for better compatibility across ml5 builds.
-  const detect = typeof state.faceDetector.detect === 'function'
-    ? state.faceDetector.detect.bind(state.faceDetector)
-    : state.faceDetector.detectSingle.bind(state.faceDetector);
-
-  detect(video, (err, result) => {
+  // Use detectSingle for better performance
+  state.faceDetector.detectSingle(video, (err, results) => {
     if (err) {
       console.log('Detection error (continue)');
     }
-
-    const landmarks = extractLandmarks(result);
-    if (landmarks.length > 0) {
-      analyzeExpression(landmarks);
-      handleEmotionActions();
+    
+    if (results && results.length > 0) {
+      const face = results[0];
+      
+      // Extract landmarks and analyze expression
+      if (face.landmarks && face.landmarks.length > 0) {
+        analyzeExpression(face.landmarks);
+        handleEmotionActions();
+      }
     } else {
       state.currentEmotion = 'no_face';
       state.emotionConfidence = 0;
@@ -154,35 +125,6 @@ function startFaceDetection() {
   });
 }
 
-function extractLandmarks(result) {
-  if (!result) return [];
-
-  const face = Array.isArray(result) ? result[0] : result;
-  if (!face || !face.landmarks) return [];
-
-  const rawLandmarks =
-    face.landmarks.positions ||
-    face.landmarks._positions ||
-    face.landmarks;
-
-  if (!Array.isArray(rawLandmarks)) return [];
-
-  return rawLandmarks
-    .map((point) => {
-      if (Array.isArray(point) && point.length >= 2) {
-        return [point[0], point[1]];
-      }
-      if (point && typeof point === 'object') {
-        const x = point._x ?? point.x;
-        const y = point._y ?? point.y;
-        if (typeof x === 'number' && typeof y === 'number') {
-          return [x, y];
-        }
-      }
-      return null;
-    })
-    .filter(Boolean);
-}
 function analyzeExpression(landmarks) {
   if (!landmarks || landmarks.length < 68) {
     state.currentEmotion = 'neutral';
