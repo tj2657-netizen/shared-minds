@@ -4,14 +4,1330 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Credit Journey Dashboard - 5 Card Types</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f5f5f3;
+  --color-text-primary: #1a1a18;
+  --color-text-secondary: #5f5e5a;
+  --color-text-tertiary: #888780;
+  --color-border-tertiary: rgba(0,0,0,0.12);
+  --color-border-secondary: rgba(0,0,0,0.22);
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background-primary: #1e1e1c;
+    --color-background-secondary: #2a2a28;
+    --color-text-primary: #f0ede8;
+    --color-text-secondary: #a8a59e;
+    --color-text-tertiary: #6e6d69;
+    --color-border-tertiary: rgba(255,255,255,0.1);
+    --color-border-secondary: rgba(255,255,255,0.2);
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  padding: 1.5rem;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.top-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.modify-panel {
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  background: var(--color-background-secondary);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.modify-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.modify-panel-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.modify-panel-close {
+  border: 0.5px solid var(--color-border-secondary);
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-radius: 18px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.modify-counts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.modify-counts .tb {
+  border-radius: 18px;
+}
+
+.modify-counts .act {
+  color: #fff;
+}
+
+.modify-fields {
+  display: grid;
+  gap: 10px;
+}
+
+.modify-field {
+  display: grid;
+  gap: 6px;
+}
+
+.modify-field label {
+  font-size: 11px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.modify-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.modify-secondary,
+.modify-save {
+  width: auto;
+  padding: 7px 12px;
+}
+
+.modify-save {
+  background: var(--color-text-primary);
+  color: var(--color-background-primary);
+}
+
+.tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  margin-bottom: 1.25rem;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar { display: none; }
+
+.tb {
+  flex: 0 0 auto;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  border: 0.5px solid var(--color-border-secondary);
+  background: var(--color-background-secondary);
+  color: var(--color-text-secondary);
+  font-family: inherit;
+  transition: background .15s, color .15s;
+}
+
+.tb:hover:not(.act) { background: var(--color-background-secondary); }
+
+.modify-btn {
+  background: #8B8A84;
+  color: #fff;
+  border: 0.5px solid transparent;
+  width: auto;
+  padding-left: 14px;
+  padding-right: 14px;
+  transition: background .15s, color .15s, border-color .15s;
+}
+
+.pnl { display: none; }
+
+.pnl.on { display: block; }
+
+.sl { font-size: 11px; letter-spacing: .07em; text-transform: uppercase; margin-bottom: 6px; }
+.rs { text-align: center; margin-bottom: 1.25rem; }
+.rw { position: relative; width: 152px; height: 152px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; }
+.rw svg { position: absolute; top: 0; left: 0; }
+.rc { position: relative; z-index: 1; text-align: center; }
+.rp { font-size: 26px; font-weight: 500; }
+.rm { font-size: 11px; margin-top: 2px; }
+.bdg { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; margin-bottom: 4px; }
+.tt { font-size: 11px; max-width: 280px; margin: 0 auto; line-height: 1.5; }
+.limit-box {
+  margin-top: 12px;
+  border-radius: var(--border-radius-lg);
+  padding: 12px;
+  text-align: left;
+}
+.cc { border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+.lp { border-radius: var(--border-radius-lg); padding: 12px; margin-bottom: 1.25rem; }
+.grocery-inline { margin-top: 8px; }
+.gctrl {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+  width: 100%;
+}
+
+.gi {
+  width: 100%;
+  min-width: 0;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  padding: 8px 10px;
+  font-size: 12px;
+  font-family: inherit;
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+}
+
+.gi::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.ct { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+.cd { font-size: 19px; font-weight: 500; }
+.cs { font-size: 11px; margin-top: 2px; }
+.bt { height: 5px; border-radius: 3px; overflow: hidden; }
+.bf { height: 100%; border-radius: 3px; }
+.cg { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 8px; margin-bottom: 1.25rem; }
+.ck { border-radius: var(--border-radius-lg); padding: 10px 12px; }
+.ci { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
+.cx { width: 28px; height: 28px; border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
+.ctag { font-size: 11px; padding: 2px 6px; border-radius: 4px; }
+.cn { margin-bottom: 2px; }
+.cn-single {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+.cn-stacked { line-height: 1.1; }
+.cn-main { font-size: 13px; font-weight: 700; }
+.cn-sub { font-size: 10px; font-weight: 500; opacity: 0.82; margin-top: 2px; }
+.ca { font-size: 15px; font-weight: 500; }
+.cf { font-size: 11px; margin-bottom: 5px; }
+.mb { height: 3px; border-radius: 2px; overflow: hidden; margin-bottom: 3px; }
+.mf { height: 100%; border-radius: 2px; }
+.cpct { font-size: 11px; text-align: right; }
+.sn { font-size: 11px; padding: 7px 10px; border-radius: var(--border-radius-md); margin-bottom: 1.25rem; }
+.gb {
+  border: 0;
+  width: 100%;
+  max-width: 100%;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: var(--border-radius-md);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.gb:hover { filter: brightness(1.05); }
+
+.gp { font-size: 12px; margin-top: 8px; }
+.ib {
+  width: 100%; padding: 9px; background: transparent;
+  border-radius: var(--border-radius-lg); font-size: 13px;
+  cursor: pointer; display: flex; align-items: center;
+  justify-content: center; gap: 7px; font-family: inherit;
+}
+
+.ib:disabled { opacity: .4; cursor: default; }
+
+.ik { border-radius: var(--border-radius-lg); padding: 10px 13px; margin-bottom: 6px; }
+.it { font-size: 12px; font-weight: 500; margin-bottom: 3px; }
+.iy { font-size: 11px; line-height: 1.55; }
+.lm { text-align: center; padding: .75rem; font-size: 12px; }
+
+.travel-insights {
+  display: grid;
+  gap: 8px;
+}
+
+.ti-card {
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  background: var(--color-background-secondary);
+  padding: 10px;
+}
+
+.ti-title {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--color-text-primary);
+}
+
+.ti-note {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.ti-list {
+  padding-left: 16px;
+  font-size: 12px;
+  color: var(--color-text-primary);
+  margin-bottom: 8px;
+}
+
+.ti-list li {
+  margin-bottom: 3px;
+}
+
+.ti-input-row {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr;
+}
+
+.ti-calc-row {
+  grid-template-columns: 1fr;
+}
+
+.ti-metrics {
+  margin-top: 8px;
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.ti-tip {
+  border-color: #cfc8f7;
+  background: #f4f1ff;
+}
+
+.pnl-starter .ck,
+.pnl-starter .cc,
+.pnl-starter .limit-box,
+.pnl-starter .sn,
+.pnl-starter .travel-insights,
+.pnl-starter .ti-card {
+	border-radius: 24px;
+	box-shadow: 0 4px 0 rgba(0,0,0,0.08);
+}
+
+.pnl-starter .gb,
+.pnl-starter .ib,
+.pnl-starter .modify-btn {
+	border-radius: 26px;
+	box-shadow: 0 6px 0 rgba(0,0,0,0.15);
+	transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.pnl-starter .gb:active,
+.pnl-starter .ib:active,
+.pnl-starter .modify-btn:active {
+	transform: translateY(3px);
+	box-shadow: 0 3px 0 rgba(0,0,0,0.15);
+}
+
+.pnl-starter .mb,
+.pnl-starter .bt {
+	height: 8px;
+	border-radius: 999px;
+	box-shadow: 0 2px 0 rgba(0,0,0,0.10);
+}
+
+.pnl-starter .mf,
+.pnl-starter .bf {
+	border-radius: 999px;
+}
+
+.health-meter {
+	border-radius: 24px;
+	background: #f2fbf6;
+	border: 1px solid #cae8d8;
+	padding: 12px;
+	margin: 0 auto 12px;
+	box-shadow: 0 4px 0 rgba(0,0,0,0.08);
+}
+
+.hm-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+
+.hm-label {
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: .06em;
+	color: #4f7a63;
+	font-weight: 700;
+}
+
+.hm-value {
+	font-size: 18px;
+	font-weight: 800;
+	color: #1f6c4a;
+}
+
+.hm-circle-wrap {
+	display: grid;
+	place-items: center;
+	margin-bottom: 10px;
+}
+
+.hm-circle {
+	width: 164px;
+	height: 164px;
+	position: relative;
+	display: grid;
+	place-items: center;
+}
+
+.hm-circle svg {
+	width: 164px;
+	height: 164px;
+	transform: rotate(-90deg);
+}
+
+.hm-ring-bg,
+.hm-ring-fill {
+	fill: none;
+	stroke-width: 12;
+}
+
+.hm-ring-bg {
+	stroke: #dceddf;
+}
+
+.hm-ring-fill {
+	stroke-linecap: round;
+	transition: stroke-dasharray .35s ease, stroke .35s ease;
+}
+
+.hm-ring-fill.low { stroke: #2fbf71; }
+.hm-ring-fill.mid { stroke: #f2b73d; }
+.hm-ring-fill.high { stroke: #f05f57; }
+
+.hm-center {
+	position: absolute;
+	display: grid;
+	place-items: center;
+	gap: 1px;
+	font-weight: 800;
+	color: #1f6c4a;
+}
+
+.hm-center-pct {
+	font-size: 28px;
+	line-height: 1;
+}
+
+.hm-center-face {
+	line-height: 1;
+}
+
+.hm-center-face.mascot {
+	width: auto;
+	height: auto;
+	background: transparent;
+	box-shadow: none;
+	border-radius: 0;
+	transform: rotate(0deg) !important;
+	animation: none !important;
+	display: grid;
+	place-items: center;
+}
+
+.hm-center-cat {
+	width: 50px !important;
+	height: 45px !important;
+	display: block;
+	margin: 0 auto;
+	transform: rotate(0deg) !important;
+	transform-origin: center;
+	transform-box: fill-box;
+}
+
+.hm-footer {
+	display: grid;
+	justify-items: center;
+	gap: 4px;
+}
+
+.mascot {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	display: grid;
+	place-items: center;
+	font-size: 23px;
+	line-height: 1;
+	background: #fff;
+	box-shadow: 0 3px 0 rgba(0,0,0,0.12);
+}
+
+.mascot.happy { animation: mascotHappy .7s ease; }
+.mascot.neutral { animation: mascotNeutral .6s ease; }
+.mascot.worried { animation: mascotWorried .7s ease; }
+
+.hm-message {
+	font-size: 12px;
+	font-weight: 700;
+	color: #355b48;
+	text-align: center;
+}
+
+.hm-status {
+	font-size: 12px;
+	font-weight: 700;
+	color: #4f7a63;
+	text-align: center;
+}
+
+.hm-tip {
+	font-size: 11px;
+	line-height: 1.4;
+	color: #486454;
+	text-align: center;
+}
+
+@keyframes mascotHappy {
+	0% { transform: translateY(2px) scale(0.98); }
+	50% { transform: translateY(-3px) scale(1.06); }
+	100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes mascotNeutral {
+	0% { transform: scale(1); }
+	50% { transform: scale(1.04); }
+	100% { transform: scale(1); }
+}
+
+@keyframes mascotWorried {
+	0% { transform: translateX(0); }
+	25% { transform: translateX(-2px); }
+	75% { transform: translateX(2px); }
+	100% { transform: translateX(0); }
+}
+
+@media (min-width: 720px) {
+  .ti-input-row {
+    grid-template-columns: 1fr 1fr auto;
+    align-items: end;
+  }
+
+  .ti-calc-row {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+</style>
 </head>
 <body>
   <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Credit Journey Dashboard - 5 Card Types</h1>
 
+  <div class="top-actions">
+    <button class="gb modify-btn" id="modifyCategoriesBtn" type="button">Modify Categories</button>
+  </div>
+  <div class="modify-panel" id="modifyPanel" hidden>
+    <div class="modify-panel-head">
+      <div>
+        <div class="sl" id="modifyPanelCardLabel">Modify categories</div>
+        <div class="modify-panel-title" id="modifyPanelTitle">Choose a card and category count</div>
+      </div>
+      <button class="modify-panel-close" id="modifyPanelClose" type="button">Close</button>
+    </div>
+    <div class="modify-counts" id="modifyCounts"></div>
+    <div class="modify-fields" id="modifyFields"></div>
+    <div class="modify-actions">
+      <button class="tb modify-secondary" id="modifyCancelBtn" type="button">Cancel</button>
+      <button class="tb modify-save" id="modifySaveBtn" type="button">Save changes</button>
+    </div>
+  </div>
   <div class="tabs" id="tabs"></div>
   <div id="panels"></div>
 
-  <script src="main.js"></script>
+  <script>
+const CARDS = [
+	{
+		id: 'starter', name: 'Starter', full: 'Chase Freedom Rise', sub: 'Build your credit',
+		accent: '#1D9E75', track: '#9FE1CB', cycleBg: '#F0FBF6', catBg: '#EAF6F1',
+		tP: 'var(--color-text-primary)', tS: 'var(--color-text-secondary)', tT: 'var(--color-text-tertiary)',
+		brd: 'var(--color-border-tertiary)', brdFill: 'rgba(0,0,0,.07)',
+		limit: 800, used: 0, daysLeft: 30, cycleDays: 30, isPoints: false,
+		limitRange: '$500-$2,000',
+		note: 'Milestone: each on-time payment builds your credit history. Keep your spendings upto 30% to build maximum credit',
+		cats: [
+			{ nm: 'Essentials (Groceries & Basic Needs)', ab: 'GR', spent: 0, lim: 150, extra: '1% back' },
+			{ nm: 'Transport',  ab: 'TR', spent: 0,  lim: 80,  extra: '1% back' },
+			{ nm: 'Daily Treats', ab: 'EN', spent: 0, lim: 50, extra: '1% back' },
+			{ nm: 'Lifestyle', ab: 'LS', spent: 0, lim: 60, extra: '1% back' },
+			{ nm: 'Bills & Utilities', ab: 'BI', spent: 0,  lim: 100, extra: '1% back' },
+		],
+		ctx: 'Chase Freedom Rise starter card, user-defined limit and utilization. Student/first-time user. Spending includes Essentials, Transport, Daily Treats, Lifestyle, and Bills & Utilities. 18 days left in billing cycle. Focus tips on building credit score, payment habits, credit history length, and avoiding common beginner mistakes.'
+	},
+	{
+		id: 'everyday', name: 'Everyday', full: 'Chase Freedom Unlimited', sub: 'Maximize cash back',
+		accent: '#185FA5', track: '#85B7EB', cycleBg: '#EDF5FC', catBg: '#E6F1FB',
+		tP: 'var(--color-text-primary)', tS: 'var(--color-text-secondary)', tT: 'var(--color-text-tertiary)',
+		brd: 'var(--color-border-tertiary)', brdFill: 'rgba(0,0,0,.07)',
+		limit: 5000, used: 0, daysLeft: 30, cycleDays: 30, isPoints: false,
+		limitRange: '$500-$20000+',
+		note: 'Estimated cash back this cycle: ~$14.85',
+		cats: [
+			{ nm: 'Reward-Optimized Spending (Groceries, Dining, Drugstores)', ab: 'RS', spent: 0, lim: 900,  extra: '3-5% back' },
+			{ nm: 'Fixed Commitments (Rent, Utilities, Phone, Streaming)',      ab: 'FC', spent: 0, lim: 1400, extra: '1-2% back' },
+			{ nm: 'Mobility & Convenience (Uber/Lyft, Gas, Transit, Delivery)', ab: 'MC', spent: 0, lim: 700,  extra: '2-3% back' },
+			{ nm: 'Lifestyle & Experience (Shopping, Entertainment, Travel)',    ab: 'LE', spent: 0, lim: 1000, extra: '1.5-3% back' },
+		],
+		ctx: 'Chase Freedom Unlimited, $5000 limit, 18% utilization. Cash back categories this cycle: Reward-Optimized Spending (Groceries, Dining, Drugstores), Fixed Commitments (Rent, Utilities, Phone/Internet, Streaming), Mobility & Convenience (Uber/Lyft, Gas, Transit, Delivery), Lifestyle & Experience (Shopping, Entertainment, Travel). 12 days left. Focus on maximizing category rewards, timing purchases for statement close, and optimizing recurring bills.'
+	},
+	{
+		id: 'travel', name: 'Travel', full: 'Chase Sapphire Preferred', sub: 'Earn your next trip',
+		accent: '#534AB7', track: '#AFA9EC', cycleBg: '#EEEDFE', catBg: '#E8E6FC',
+		tP: 'var(--color-text-primary)', tS: 'var(--color-text-secondary)', tT: 'var(--color-text-tertiary)',
+		brd: 'var(--color-border-tertiary)', brdFill: 'rgba(0,0,0,.07)',
+		limit: 12000, used: 0, daysLeft: 30, cycleDays: 30, isPoints: true,
+		note: 'Points balance: 47,200 pts ~= $590 in travel redemptions',
+		cats: [
+			{ nm: 'Travel',  ab: 'TV', spent: 0, lim: 5000,  extra: '5x pts' },
+			{ nm: 'Dining',  ab: 'DI', spent: 0, lim: 3000,  extra: '3x pts' },
+			{ nm: 'Hotels',  ab: 'HT', spent: 0,  lim: 2000,  extra: '2x pts' },
+			{ nm: 'Other',   ab: 'OT', spent: 0,  lim: 2000,  extra: '1x pts' },
+		],
+		ctx: 'Chase Sapphire Preferred, $12000 limit, 15% utilization. Points this cycle: Travel 2400pts/5000 (5x), Dining 1800pts/3000 (3x), Hotels 800pts/2000 (2x), Other 600pts/2000 (1x). Total balance 47,200 points. 8 days until cycle closes. Focus tips on transfer partners, maximizing point value, and upcoming trip redemption strategy.'
+	},
+	{
+		id: 'premium', name: 'Premium', full: 'Chase Sapphire Reserve', sub: 'Elite benefits',
+		accent: '#BA7517', track: '#633806', cycleBg: '#252218', catBg: '#1E1C12',
+		isDark: true,
+		tP: '#F0DEC8', tS: '#A89070', tT: '#705E48',
+		brd: 'rgba(255,255,255,.12)', brdFill: 'rgba(255,255,255,.08)',
+		limit: 25000, used: 0, daysLeft: 30, cycleDays: 30, isPoints: true,
+		note: 'Annual travel credit: $245 of $300 used - $55 remaining',
+		cats: [
+			{ nm: 'Travel',  ab: 'TV', spent: 0, lim: 15000, extra: '10x pts' },
+			{ nm: 'Dining',  ab: 'DI', spent: 0, lim: 6000,  extra: '3x pts' },
+			{ nm: 'Hotels',  ab: 'HT', spent: 0, lim: 4000,  extra: '2x pts' },
+			{ nm: 'Other',   ab: 'OT', spent: 0, lim: 3000,  extra: '1x pts' },
+		],
+		ctx: 'Chase Sapphire Reserve, $25000 limit, 22% utilization. $300 annual travel credit ($245 used, $55 remaining). Cycle ends in 5 DAYS - urgent. Points: Travel 8800pts (10x), Dining 3600pts (3x), Hotels 2200pts (2x), Other 1100pts. Priority Pass lounge access active. Focus tips on using remaining $55 travel credit before cycle, lounge access strategy, and points redemption at maximum value.'
+	},
+	{
+		id: 'business', name: 'Business', full: 'Chase Ink Business', sub: 'Grow your business',
+		accent: '#3C3489', track: '#7F77DD', cycleBg: '#EEEDFE', catBg: '#E8E6FC',
+		tP: 'var(--color-text-primary)', tS: 'var(--color-text-secondary)', tT: 'var(--color-text-tertiary)',
+		brd: 'var(--color-border-tertiary)', brdFill: 'rgba(0,0,0,.07)',
+		limit: 20000, used: 0, daysLeft: 30, cycleDays: 30, isPoints: false,
+		note: 'Estimated cash back this cycle: ~$68.10',
+		cats: [
+			{ nm: 'Office',     ab: 'OF', spent: 0,  lim: 800,  extra: '5% back' },
+			{ nm: 'Ads & Mktg', ab: 'AD', spent: 0, lim: 2000, extra: '3% back' },
+			{ nm: 'Software',   ab: 'SW', spent: 0,  lim: 500,  extra: '3% back' },
+			{ nm: 'Travel',     ab: 'TV', spent: 0,  lim: 1500, extra: '2% back' },
+		],
+		ctx: 'Chase Ink Business Unlimited, $20000 limit, 28% utilization. Business spending: Office 5% ($450/$800), Ads & Marketing 3% ($1200/$2000), Software 3% ($380/$500 - nearly at limit), Travel 2% ($970/$1500). 22 days left. Focus tips on business expense optimization, tax deduction strategies for card rewards, employee card benefits, and using the signup bonus effectively.'
+	}
+];
+
+const STARTER_ALLOCATIONS = [
+	{ name: 'Bills & Utilities', pct: 0.40 },
+	{ name: 'Essentials (Groceries & Basic Needs)', pct: 0.25 },
+	{ name: 'Transport', pct: 0.10 },
+	{ name: 'Daily Treats', pct: 0.15 },
+	{ name: 'Lifestyle', pct: 0.10 }
+];
+
+const TRAVEL_POINT_VALUE = 0.0125;
+const TRAVEL_KEYWORDS = [
+	'airline', 'airlines', 'delta', 'united', 'jetblue', 'southwest',
+	'rental', 'hertz', 'avis', 'budget', 'enterprise',
+	'hotel', 'marriott', 'hilton', 'hyatt', 'expedia', 'booking', 'amtrak'
+];
+
+function applyStarterCategoryLimits(card) {
+	if (!card || card.id !== 'starter') {
+		return;
+	}
+
+	let assigned = 0;
+	STARTER_ALLOCATIONS.forEach((rule, idx) => {
+		const cat = card.cats.find((c) => c.nm === rule.name);
+		if (!cat) {
+			return;
+		}
+
+		if (idx === STARTER_ALLOCATIONS.length - 1) {
+			cat.lim = Math.max(0, Math.round(card.limit - assigned));
+			return;
+		}
+
+		const allocation = Math.round(card.limit * rule.pct);
+		cat.lim = allocation;
+		assigned += allocation;
+	});
+}
+
+const starterCard = CARDS.find((card) => card.id === 'starter');
+applyStarterCategoryLimits(starterCard);
+
+function mkRing(pct, accent, track) {
+	const r = 69;
+	const cx = 76;
+	const cy = 76;
+	const sw = 14;
+	const circ = 2 * Math.PI * r;
+	const fill = Math.max(0, Math.min(1, pct / 100)) * circ;
+	return `<svg width="152" height="152" viewBox="0 0 152 152" role="img" aria-label="Credit utilization ${pct}%"><title>Credit utilization: ${pct}%</title><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${track}" stroke-width="${sw}"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${accent}" stroke-width="${sw}" stroke-dasharray="${fill.toFixed(1)} ${(circ - fill).toFixed(1)}" stroke-linecap="round" transform="rotate(-90 ${cx} ${cy})"/></svg>`;
+}
+
+function mkStatus(pct) {
+	if (pct < 10) {
+		return { bg: '#FAEEDA', txt: '#854F0B', dot: '#BA7517', lbl: 'Very low - may seem inactive', tip: 'Aim for 1-5% to signal responsible activity to bureaus.' };
+	}
+	if (pct <= 30) {
+		return { bg: '#EAF3DE', txt: '#3B6D11', dot: '#639922', lbl: 'Excellent range', tip: 'Under 30% is the sweet spot. Your score thanks you.' };
+	}
+	if (pct <= 50) {
+		return { bg: '#FAEEDA', txt: '#854F0B', dot: '#BA7517', lbl: 'Moderate - try to reduce', tip: 'Pay down before your statement closes to lower reported utilization.' };
+	}
+	return { bg: '#FCEBEB', txt: '#A32D2D', dot: '#A32D2D', lbl: 'High utilization', tip: 'Above 50% can significantly drop your score. Pay down soon.' };
+}
+
+function renderStarterHealthMeter(pct, status) {
+	const mood = pct < 30 ? 'low' : pct <= 50 ? 'mid' : 'high';
+	const mascotClass = pct < 30 ? 'happy' : pct <= 50 ? 'neutral' : 'worried';
+	const catGraphic = getHealthCatGraphic(mascotClass);
+	const message = pct < 30
+		? "You're doing great!"
+		: pct <= 50
+			? 'Keep an eye on this'
+			: 'High usage - consider paying down balance';
+	const r = 54;
+	const circ = 2 * Math.PI * r;
+	const fill = Math.max(0, Math.min(100, pct)) / 100 * circ;
+
+	return `<div class="health-meter" role="img" aria-label="Credit health meter at ${pct}% utilization">
+		<div class="hm-head">
+			<div class="hm-label">Health Meter</div>
+			<div class="hm-value">${pct}%</div>
+		</div>
+		<div class="hm-circle-wrap">
+			<div class="hm-circle">
+				<svg viewBox="0 0 138 138" aria-hidden="true">
+					<circle class="hm-ring-bg" cx="69" cy="69" r="${r}"></circle>
+					<circle class="hm-ring-fill ${mood}" cx="69" cy="69" r="${r}" stroke-dasharray="${fill.toFixed(1)} ${(circ - fill).toFixed(1)}"></circle>
+				</svg>
+				<div class="hm-center">
+					<div class="hm-center-pct">${pct}%</div>
+					<div class="hm-center-face mascot ${mascotClass}">${catGraphic}</div>
+				</div>
+			</div>
+		</div>
+		<div class="hm-footer">
+			<div class="hm-message">${message}</div>
+			<div class="hm-status">${status.lbl}</div>
+			<div class="hm-tip">${status.tip}</div>
+		</div>
+	</div>`;
+}
+
+function getHealthCatGraphic(mood) {
+	const mouth = mood === 'happy'
+		? '<path d="M39 58c2.6 3.2 7.1 4.1 11.5 4.1s8.9-.9 11.5-4.1" stroke="#111" stroke-width="3" stroke-linecap="round" fill="none"/>'
+		: mood === 'neutral'
+			? '<path d="M40 60h21" stroke="#111" stroke-width="3" stroke-linecap="round" fill="none"/>'
+			: '<path d="M39 63c2.6-3.2 7.1-4.1 11.5-4.1s8.9.9 11.5 4.1" stroke="#111" stroke-width="3" stroke-linecap="round" fill="none"/>';
+
+	const brow = mood === 'worried'
+		? '<path d="M31 47l7-2M65 45l-7 2" stroke="#111" stroke-width="2.4" stroke-linecap="round"/>'
+		: '';
+
+	return `<svg class="hm-center-cat" viewBox="0 0 96 96" aria-hidden="true">
+		<path d="M20 36L25 17 40 27" fill="#c8b3a3" stroke="#111" stroke-width="4.2" stroke-linejoin="round"/>
+		<path d="M76 36L71 17 56 27" fill="#c8b3a3" stroke="#111" stroke-width="4.2" stroke-linejoin="round"/>
+		<path d="M27 24l10 6M69 24l-10 6" stroke="#f4d8cf" stroke-width="4.2" stroke-linecap="round"/>
+		<ellipse cx="48" cy="56" rx="31" ry="25" fill="#f8f8f8" stroke="#111" stroke-width="4.2"/>
+		<path d="M26 40c6-8 13-11 22-11s16 3 22 11" fill="none" stroke="#c8b3a3" stroke-width="10" stroke-linecap="round"/>
+		<circle cx="37" cy="52" r="5" fill="#111"/>
+		<circle cx="59" cy="52" r="5" fill="#111"/>
+		<path d="M14 55h13M69 55h13M14 61h13M69 61h13" stroke="#111" stroke-width="3.8" stroke-linecap="round"/>
+		<circle cx="31" cy="59" r="6.5" fill="#f9d7d0"/>
+		<circle cx="65" cy="59" r="6.5" fill="#f9d7d0"/>
+		<circle cx="29" cy="59" r="1.1" fill="#f2b9bc"/><circle cx="32" cy="57" r="1" fill="#f2b9bc"/><circle cx="35" cy="60" r="1" fill="#f2b9bc"/>
+		<circle cx="63" cy="59" r="1.1" fill="#f2b9bc"/><circle cx="66" cy="57" r="1" fill="#f2b9bc"/><circle cx="69" cy="60" r="1" fill="#f2b9bc"/>
+		<path d="M48 55l-2.1 2h4.2z" fill="#111"/>
+		${mouth}
+		${brow}
+	</svg>`;
+}
+
+function escapeHTML(value) {
+	return String(value)
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#39;');
+}
+
+function renderCategoryName(name, accentColor) {
+	const match = name.match(/^(.+?)\s*\((.+)\)$/);
+	if (!match) {
+		return `<div class="cn cn-single" style="color:${accentColor};">${escapeHTML(name)}</div>`;
+	}
+
+	const main = match[1].trim();
+	const sub = match[2].trim();
+	return `
+		<div class="cn cn-stacked" style="color:${accentColor};">
+			<div class="cn-main">${escapeHTML(main)}</div>
+			<div class="cn-sub">(${escapeHTML(sub)})</div>
+		</div>`;
+}
+
+function getCategoryLabel(cat) {
+	return cat.label || cat.nm;
+}
+
+const CATEGORY_LAYOUT_STORAGE_KEY = 'credit-journey-category-layout-v1';
+
+function getCategoryCount(card) {
+	return card.categoryCount || card.cats.length;
+}
+
+function createPlaceholderCategory(card, index) {
+	const nextNumber = index + 1;
+	return {
+		nm: `Category ${nextNumber}`,
+		ab: `C${nextNumber}`,
+		spent: 0,
+		lim: Math.max(1, Math.round(card.limit / 5)),
+		extra: '1% back'
+	};
+}
+
+function ensureCategorySlots(card, count) {
+	while (card.cats.length < count) {
+		card.cats.push(createPlaceholderCategory(card, card.cats.length));
+	}
+}
+
+function persistCategoryLayout() {
+	const payload = {};
+	CARDS.forEach((card) => {
+		payload[card.id] = {
+			count: getCategoryCount(card),
+			labels: card.cats.map((cat) => cat.label || '')
+		};
+	});
+	try {
+		localStorage.setItem(CATEGORY_LAYOUT_STORAGE_KEY, JSON.stringify(payload));
+	} catch (error) {
+		// Ignore storage failures.
+	}
+}
+
+function loadCategoryLayout() {
+	try {
+		const raw = localStorage.getItem(CATEGORY_LAYOUT_STORAGE_KEY);
+		if (!raw) {
+			return;
+		}
+
+		const saved = JSON.parse(raw);
+		CARDS.forEach((card) => {
+			const layout = saved?.[card.id];
+			if (!layout) {
+				return;
+			}
+
+			const nextCount = Math.min(5, Math.max(3, Number(layout.count) || card.cats.length));
+			ensureCategorySlots(card, nextCount);
+			card.categoryCount = nextCount;
+			if (Array.isArray(layout.labels)) {
+				layout.labels.forEach((label, index) => {
+					if (card.cats[index] && String(label).trim()) {
+						card.cats[index].label = String(label).trim();
+					}
+				});
+			}
+		});
+	} catch (error) {
+		// Ignore malformed storage data.
+	}
+}
+
+loadCategoryLayout();
+
+const modifyPanel = document.getElementById('modifyPanel');
+const modifyPanelCardLabel = document.getElementById('modifyPanelCardLabel');
+const modifyPanelTitle = document.getElementById('modifyPanelTitle');
+const modifyCounts = document.getElementById('modifyCounts');
+const modifyFields = document.getElementById('modifyFields');
+const modifyCategoriesBtn = document.getElementById('modifyCategoriesBtn');
+const modifyPanelClose = document.getElementById('modifyPanelClose');
+const modifyCancelBtn = document.getElementById('modifyCancelBtn');
+const modifySaveBtn = document.getElementById('modifySaveBtn');
+
+const modifyState = {
+	cardId: CARDS[0]?.id || null,
+	count: 5
+};
+
+function closeModifyPanel() {
+	if (modifyPanel) {
+		modifyPanel.hidden = true;
+	}
+}
+
+function openModifyPanel(cardId) {
+	const card = CARDS.find((c) => c.id === cardId);
+	if (!card || !modifyPanel || !modifyPanelCardLabel || !modifyPanelTitle || !modifyCounts || !modifyFields) {
+		return;
+	}
+
+	modifyState.cardId = card.id;
+	modifyState.count = getCategoryCount(card);
+	modifyPanel.hidden = false;
+	modifyPanelCardLabel.textContent = card.full;
+	modifyPanelTitle.textContent = `Set ${card.name} categories and labels`;
+	modifyCounts.innerHTML = [3, 4, 5].map((count) => `
+		<button class="tb ${count === modifyState.count ? 'act' : ''}" type="button" data-count="${count}">${count} categories</button>
+	`).join('');
+	modifyCounts.querySelectorAll('button').forEach((button) => {
+		button.onclick = () => {
+			modifyState.count = Number(button.dataset.count);
+			openModifyPanel(card.id);
+		};
+	});
+
+	ensureCategorySlots(card, 5);
+	modifyFields.innerHTML = card.cats.slice(0, 5).map((cat, index) => {
+		const isVisible = index < modifyState.count;
+		return `
+			<div class="modify-field" style="display:${isVisible ? 'grid' : 'none'};">
+				<label for="modify-${card.id}-${index}">Category ${index + 1}</label>
+				<input class="gi" id="modify-${card.id}-${index}" type="text" value="${escapeHTML(getCategoryLabel(cat))}" placeholder="Category name" />
+			</div>
+		`;
+	}).join('');
+}
+
+function saveModifyPanel() {
+	const card = CARDS.find((c) => c.id === modifyState.cardId);
+	if (!card || !modifyFields) {
+		return;
+	}
+
+	ensureCategorySlots(card, 5);
+	card.categoryCount = modifyState.count;
+	for (let index = 0; index < modifyState.count; index += 1) {
+		const input = document.getElementById(`modify-${card.id}-${index}`);
+		const nextLabel = String(input?.value ?? '').trim();
+		if (nextLabel) {
+			card.cats[index].label = nextLabel;
+		}
+	}
+
+	persistCategoryLayout();
+	renderPanels();
+	show(activeTabIndex);
+	closeModifyPanel();
+}
+
+function ensureTravelInsights(card) {
+	if (!card || card.id !== 'travel') {
+		return;
+	}
+
+	if (!card.travelInsights) {
+		card.travelInsights = {
+			transactions: [
+				{ merchant: 'Delta Airlines', amount: 420 },
+				{ merchant: 'Hertz Rental Car', amount: 220 },
+				{ merchant: 'Whole Foods', amount: 68 }
+			],
+			bookingAmount: 650
+		};
+	}
+}
+
+function looksLikeTravelMerchant(name) {
+	const value = String(name || '').toLowerCase();
+	return TRAVEL_KEYWORDS.some((keyword) => value.includes(keyword));
+}
+
+function renderTravelInsights(card) {
+	ensureTravelInsights(card);
+	const state = card.travelInsights;
+	const travelMatches = state.transactions.filter((item) => looksLikeTravelMerchant(item.merchant));
+	const bookingAmount = Number(state.bookingAmount) || 0;
+	const directPoints = bookingAmount * 2;
+	const portalPoints = bookingAmount * 5;
+	const extraValue = (portalPoints - directPoints) * TRAVEL_POINT_VALUE;
+	const merchantInputId = `travel-merchant-${card.id}`;
+	const amountInputId = `travel-merchant-amount-${card.id}`;
+	const bookingInputId = `travel-booking-${card.id}`;
+
+	return `<div class="travel-insights">
+		<div class="ti-card">
+			<div class="ti-title">Travel Merchant Detection</div>
+			${travelMatches.length > 0
+				? `<ul class="ti-list">${travelMatches.map((item) => `<li>${escapeHTML(item.merchant)} ($${Number(item.amount || 0).toFixed(2)})</li>`).join('')}</ul>`
+				: '<div class="ti-note">No travel-related merchants detected yet.</div>'
+			}
+			<div class="ti-input-row">
+				<input class="gi" id="${merchantInputId}" type="text" placeholder="Merchant name" />
+				<input class="gi" id="${amountInputId}" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Amount" />
+				<button class="gb" onclick="addTravelTransaction('${card.id}', '${merchantInputId}', '${amountInputId}')" style="background:${card.accent};">Add</button>
+			</div>
+		</div>
+
+		<div class="ti-card ti-tip">
+			<div class="ti-title">Travel Protection Tip</div>
+			<div class="ti-note">You have rental car insurance with this card. You can decline extra coverage.</div>
+		</div>
+
+		<div class="ti-card">
+			<div class="ti-title">Travel Multiplier Calculator</div>
+			<div class="ti-input-row ti-calc-row">
+				<input class="gi" id="${bookingInputId}" type="number" min="0" step="0.01" inputmode="decimal" value="${bookingAmount}" placeholder="Booking amount" />
+				<button class="gb" onclick="updateTravelBooking('${card.id}', '${bookingInputId}')" style="background:${card.accent};">Calculate</button>
+			</div>
+			<div class="ti-metrics">
+				<div>Points via direct booking (2x): <strong>${Math.round(directPoints)}</strong></div>
+				<div>Points via Chase portal (5x): <strong>${Math.round(portalPoints)}</strong></div>
+				<div>Extra value difference: <strong>$${extraValue.toFixed(2)}</strong></div>
+			</div>
+		</div>
+	</div>`;
+}
+
+function renderPanel(c) {
+	const pct = Math.round(c.used / c.limit * 100);
+	const cpct = Math.round((c.cycleDays - c.daysLeft) / c.cycleDays * 100);
+	const s = mkStatus(pct);
+	const rc = pct > 50 ? '#E24B4A' : pct > 30 ? '#BA7517' : c.accent;
+	const cc = c.daysLeft <= 5 ? '#E24B4A' : c.daysLeft <= 10 ? '#BA7517' : c.accent;
+	const panelStyle = c.isDark ? 'background:#1C1A0E;border-radius:var(--border-radius-lg);padding:1.25rem;' : '';
+	const limitInputId = `limit-${c.id}`;
+	const visibleCats = c.cats.slice(0, getCategoryCount(c));
+	const isTravel = c.id === 'travel';
+
+	const cats = visibleCats.map((cat) => {
+		const cp = Math.round(cat.spent / cat.lim * 100);
+		const over = cp > 100;
+		const bc = over ? '#E24B4A' : cp > 85 ? '#BA7517' : c.accent;
+		const amt = c.isPoints ? `${cat.spent.toLocaleString()} pts` : `$${cat.spent}`;
+		const lmt = c.isPoints ? `${cat.lim.toLocaleString()} pts` : `$${cat.lim}`;
+		const inputId = `ci-${c.id}-${cat.ab}`;
+		const categoryPoints = (c.loopPointsMap && c.loopPointsMap[cat.nm]) || 0;
+		const rewardLabel = c.isPoints ? 'Points earned' : 'Rewards earned';
+		const labelValue = getCategoryLabel(cat);
+		const categoryActions = `<div class="grocery-inline">
+				<div class="gctrl">
+					<input class="gi" id="${inputId}" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Amount ($)" />
+					<button class="gb" onclick="logCategorySpend('${c.id}', '${cat.nm}', '${inputId}')" style="background:${c.accent};">Add</button>
+				</div>
+				<div class="gp" style="color:${c.tS};">${rewardLabel}: <strong style="color:${c.tP};">${categoryPoints}</strong></div>
+			</div>`;
+
+		return `<div class="ck" style="background:${c.catBg};border:0.5px solid ${c.brd};">
+			<div class="ci">
+				<div class="cx" style="background:${bc}25;color:${bc};">${cat.ab}</div>
+				${over
+					? '<span class="ctag" style="background:#FCEBEB;color:#791F1F;">Over</span>'
+					: `<span class="ctag" style="background:${c.accent}20;color:${c.accent};">${cat.extra}</span>`
+				}
+			</div>
+			${renderCategoryName(labelValue, c.tS)}
+			<div class="ca" style="color:${c.tP};">${amt}</div>
+			<div class="cf" style="color:${c.tT};">of ${lmt}</div>
+			<div class="mb" style="background:${c.brdFill};"><div class="mf" style="width:${Math.min(100, cp)}%;background:${bc};"></div></div>
+			<div class="cpct" style="color:${c.tT};">${cp}%</div>
+			${categoryActions}
+		</div>`;
+	}).join('');
+
+	const standardInsights = `<button class="ib" id="ib-${c.id}" onclick="getIns('${c.id}')" style="border:0.5px solid ${c.isDark ? 'rgba(255,255,255,.22)' : 'var(--color-border-secondary)'};color:${c.tP};">
+			<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm.75 10.25h-1.5v-4h1.5v4zm0-5.5h-1.5V4.25h1.5V5.75z" fill="currentColor"/></svg>
+			Get personalized tips ->
+		</button>
+		<div id="io-${c.id}" style="margin-top:10px;"></div>`;
+
+	const sectionAfterCycle = isTravel
+		? `<div class="sl" style="color:${c.tT};margin-bottom:7px;">Travel insights</div>${renderTravelInsights(c)}`
+		: `<div class="cg">${cats}</div><div class="sl" style="color:${c.tT};margin-bottom:7px;">Smart insights</div>${standardInsights}`;
+
+	return `<div class="pnl pnl-${c.id}" id="pnl-${c.id}" style="${panelStyle}">
+		<div class="rs">
+			<div class="sl" style="color:${c.tT};">${c.sub}</div>
+			<div style="font-size:13px;font-weight:500;color:${c.tP};margin-bottom:10px;">${c.full}</div>
+			${c.id === 'starter'
+				? renderStarterHealthMeter(pct, s)
+				: `<div class="rw">${mkRing(pct, rc, c.track)}<div class="rc"><div class="rp" style="color:${rc};">${pct}%</div><div class="rm" style="color:${c.tS};">utilization</div></div></div>`
+			}
+			<div class="bdg" style="background:${s.bg};color:${s.txt};">
+				<svg width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3" fill="${s.dot}"/></svg>
+				${s.lbl}
+			</div>
+			<p class="tt" style="color:${c.tT};">${s.tip}</p>
+			<div class="limit-box" style="background:${c.cycleBg};border:0.5px solid ${c.brd};">
+				<div class="sl" style="color:${c.tT};margin-bottom:8px;">Set your credit limit</div>
+				${c.limitRange ? `<div style="font-size:11px;color:${c.tS};margin-bottom:8px;">Typical range: ${c.limitRange}</div>` : ''}
+				<div class="gctrl">
+					<input class="gi" id="${limitInputId}" type="number" min="1" step="1" inputmode="numeric" placeholder="Credit limit ($)" value="${c.limit}" />
+					<button class="gb" onclick="updateCreditLimit('${c.id}', '${limitInputId}')" style="background:${c.accent};">Update limit</button>
+				</div>
+			</div>
+		</div>
+		${c.note ? `<div class="sn" style="background:${c.accent}18;color:${c.accent};">${c.note}</div>` : ''}
+		<div class="cc" style="background:${c.cycleBg};">
+			<div class="ct">
+				<div>
+					<div class="sl" style="color:${c.tT};">Billing cycle</div>
+					<div class="cd" style="color:${cc};">${c.daysLeft} days left</div>
+					<div style="font-size:11px;color:${c.tS};">until renewal</div>
+				</div>
+				<div style="text-align:right;">
+					<div style="font-size:11px;color:${c.tT};">Cycle used</div>
+					<div style="font-size:15px;font-weight:500;color:${c.tP};">${cpct}%</div>
+				</div>
+			</div>
+			<div class="bt" style="background:${c.brdFill};"><div class="bf" style="width:${cpct}%;background:${cc};"></div></div>
+		</div>
+		${sectionAfterCycle}
+	</div>`;
+}
+
+const tabsEl = document.getElementById('tabs');
+const panelsEl = document.getElementById('panels');
+let activeTabIndex = 0;
+
+function renderPanels() {
+	panelsEl.innerHTML = CARDS.map((c) => renderPanel(c)).join('');
+}
+
+if (modifyCategoriesBtn) {
+	modifyCategoriesBtn.onclick = () => openModifyPanel(CARDS[activeTabIndex]?.id);
+}
+
+if (modifyPanelClose) {
+	modifyPanelClose.onclick = closeModifyPanel;
+}
+
+if (modifyCancelBtn) {
+	modifyCancelBtn.onclick = closeModifyPanel;
+}
+
+if (modifySaveBtn) {
+	modifySaveBtn.onclick = saveModifyPanel;
+}
+
+CARDS.forEach((c, i) => {
+	const tb = document.createElement('button');
+	tb.className = 'tb';
+	tb.textContent = c.name;
+	tb.onclick = () => show(i);
+	tabsEl.appendChild(tb);
+});
+
+renderPanels();
+
+function show(idx) {
+	activeTabIndex = idx;
+	document.querySelectorAll('.pnl').forEach((p, i) => p.classList.toggle('on', i === idx));
+	tabsEl.querySelectorAll('.tb').forEach((t, i) => {
+		const on = i === idx;
+		t.classList.toggle('act', on);
+		t.style.background = on ? CARDS[i].accent : '';
+		t.style.color = on ? '#fff' : 'var(--color-text-secondary)';
+		t.style.borderColor = on ? 'transparent' : 'var(--color-border-secondary)';
+	});
+
+	if (modifyCategoriesBtn) {
+		modifyCategoriesBtn.style.background = CARDS[idx]?.accent || '#8B8A84';
+		modifyCategoriesBtn.style.color = '#fff';
+		modifyCategoriesBtn.style.borderColor = 'transparent';
+	}
+}
+
+function getRewardMultiplier(extraLabel) {
+	const match = extraLabel.match(/([\d.]+)%/);
+	if (!match) {
+		return 1;
+	}
+	return Math.max(1, Math.round(Number(match[1])));
+}
+
+function logCategorySpend(cardId, categoryName, inputId) {
+	const card = CARDS.find((c) => c.id === cardId);
+	if (!card) {
+		return;
+	}
+
+	const category = card.cats.find((cat) => cat.nm === categoryName);
+	if (!category) {
+		return;
+	}
+
+	const amountInput = document.getElementById(inputId);
+	const enteredAmount = Number(amountInput?.value);
+	if (!Number.isFinite(enteredAmount) || enteredAmount <= 0) {
+		if (amountInput) {
+			amountInput.focus();
+		}
+		return;
+	}
+
+	category.spent += enteredAmount;
+	card.used += enteredAmount;
+	if (!card.loopPointsMap) {
+		card.loopPointsMap = {};
+	}
+	card.loopPointsMap[categoryName] = (card.loopPointsMap[categoryName] || 0) + enteredAmount * getRewardMultiplier(category.extra);
+
+	renderPanels();
+	show(activeTabIndex);
+}
+
+function addTravelTransaction(cardId, merchantInputId, amountInputId) {
+	const card = CARDS.find((c) => c.id === cardId);
+	if (!card || card.id !== 'travel') {
+		return;
+	}
+
+	ensureTravelInsights(card);
+	const merchantInput = document.getElementById(merchantInputId);
+	const amountInput = document.getElementById(amountInputId);
+	const merchant = String(merchantInput?.value ?? '').trim();
+	const amount = Number(amountInput?.value ?? 0);
+	if (!merchant || !Number.isFinite(amount) || amount < 0) {
+		return;
+	}
+
+	card.travelInsights.transactions.unshift({ merchant, amount });
+	card.travelInsights.transactions = card.travelInsights.transactions.slice(0, 8);
+	if (merchantInput) merchantInput.value = '';
+	if (amountInput) amountInput.value = '';
+	renderPanels();
+	show(activeTabIndex);
+}
+
+function updateTravelBooking(cardId, inputId) {
+	const card = CARDS.find((c) => c.id === cardId);
+	if (!card || card.id !== 'travel') {
+		return;
+	}
+
+	ensureTravelInsights(card);
+	const input = document.getElementById(inputId);
+	const value = Number(input?.value ?? 0);
+	if (!Number.isFinite(value) || value < 0) {
+		return;
+	}
+	card.travelInsights.bookingAmount = value;
+	renderPanels();
+	show(activeTabIndex);
+}
+
+function updateCreditLimit(cardId, inputId) {
+	const card = CARDS.find((c) => c.id === cardId);
+	if (!card) {
+		return;
+	}
+
+	const limitInput = document.getElementById(inputId);
+	const rawValue = String(limitInput?.value ?? '').replace(/[$,\s]/g, '');
+	const enteredLimit = Number(rawValue);
+	if (!Number.isFinite(enteredLimit) || enteredLimit <= 0) {
+		if (limitInput) {
+			limitInput.focus();
+		}
+		return;
+	}
+
+	const previousLimit = Math.max(1, Number(card.limit) || 1);
+	card.limit = Math.round(enteredLimit);
+	if (card.id === 'starter') {
+		applyStarterCategoryLimits(card);
+	} else {
+		const ratio = card.limit / previousLimit;
+		let assigned = 0;
+		card.cats.forEach((cat, idx) => {
+			if (idx === card.cats.length - 1) {
+				cat.lim = Math.max(0, Math.round(card.limit - assigned));
+				return;
+			}
+			const nextLimit = Math.max(1, Math.round(cat.lim * ratio));
+			cat.lim = nextLimit;
+			assigned += nextLimit;
+		});
+	}
+	renderPanels();
+	show(activeTabIndex);
+}
+
+		persistCategoryLayout();
+async function getIns(id) {
+	const c = CARDS.find((x) => x.id === id);
+	const btn = document.getElementById(`ib-${id}`);
+	const out = document.getElementById(`io-${id}`);
+	btn.disabled = true;
+	out.innerHTML = `<div class="lm" style="color:${c.tS};">Analyzing your ${c.name.toLowerCase()} card profile...</div>`;
+
+	const prompt = `You are a concise credit advisor. The user has a ${c.full}. Context: ${c.ctx}. Give exactly 3 short, specific, actionable tips tailored to THIS card type that many users overlook. Return only a JSON array: [{"title":"...","tip":"..."}]. No markdown, no preamble, no extra text.`;
+
+	try {
+		const r = await fetch('https://api.anthropic.com/v1/messages', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				model: 'claude-sonnet-4-20250514',
+				max_tokens: 500,
+				messages: [{ role: 'user', content: prompt }]
+			})
+		});
+		const d = await r.json();
+		const txt = (d.content || []).find((b) => b.type === 'text')?.text || '[]';
+		const tips = JSON.parse(txt.replace(/```json|```/g, '').trim());
+		out.innerHTML = tips.map((t) => `
+			<div class="ik" style="background:${c.cycleBg};">
+				<div class="it" style="color:${c.tP};">${t.title}</div>
+				<div class="iy" style="color:${c.tS};">${t.tip}</div>
+			</div>`).join('');
+	} catch (e) {
+		out.innerHTML = `<div class="lm" style="color:${c.tS};">Could not load insights - please try again.</div>`;
+	}
+	btn.disabled = false;
+}
+
+show(0);
+
+</script>
 </body>
 </html>

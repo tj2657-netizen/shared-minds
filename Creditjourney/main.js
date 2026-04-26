@@ -4,7 +4,7 @@ const CARDS = [
 		accent: '#1D9E75', track: '#9FE1CB', cycleBg: '#F0FBF6', catBg: '#EAF6F1',
 		tP: 'var(--color-text-primary)', tS: 'var(--color-text-secondary)', tT: 'var(--color-text-tertiary)',
 		brd: 'var(--color-border-tertiary)', brdFill: 'rgba(0,0,0,.07)',
-		limit: 800, used: 0, daysLeft: 18, cycleDays: 30, isPoints: false,
+		limit: 800, used: 0, daysLeft: 30, cycleDays: 30, isPoints: false,
 		limitRange: '$500-$2,000',
 		note: 'Milestone: each on-time payment builds your credit history. Keep your spendings upto 30% to build maximum credit',
 		cats: [
@@ -21,7 +21,7 @@ const CARDS = [
 		accent: '#185FA5', track: '#85B7EB', cycleBg: '#EDF5FC', catBg: '#E6F1FB',
 		tP: 'var(--color-text-primary)', tS: 'var(--color-text-secondary)', tT: 'var(--color-text-tertiary)',
 		brd: 'var(--color-border-tertiary)', brdFill: 'rgba(0,0,0,.07)',
-		limit: 5000, used: 0, daysLeft: 12, cycleDays: 30, isPoints: false,
+		limit: 5000, used: 0, daysLeft: 30, cycleDays: 30, isPoints: false,
 		limitRange: '$500-$20000+',
 		note: 'Estimated cash back this cycle: ~$14.85',
 		cats: [
@@ -37,7 +37,7 @@ const CARDS = [
 		accent: '#534AB7', track: '#AFA9EC', cycleBg: '#EEEDFE', catBg: '#E8E6FC',
 		tP: 'var(--color-text-primary)', tS: 'var(--color-text-secondary)', tT: 'var(--color-text-tertiary)',
 		brd: 'var(--color-border-tertiary)', brdFill: 'rgba(0,0,0,.07)',
-		limit: 12000, used: 0, daysLeft: 8, cycleDays: 30, isPoints: true,
+		limit: 12000, used: 0, daysLeft: 30, cycleDays: 30, isPoints: true,
 		note: 'Points balance: 47,200 pts ~= $590 in travel redemptions',
 		cats: [
 			{ nm: 'Travel',  ab: 'TV', spent: 0, lim: 5000,  extra: '5x pts' },
@@ -53,7 +53,7 @@ const CARDS = [
 		isDark: true,
 		tP: '#F0DEC8', tS: '#A89070', tT: '#705E48',
 		brd: 'rgba(255,255,255,.12)', brdFill: 'rgba(255,255,255,.08)',
-		limit: 25000, used: 0, daysLeft: 5, cycleDays: 30, isPoints: true,
+		limit: 25000, used: 0, daysLeft: 30, cycleDays: 30, isPoints: true,
 		note: 'Annual travel credit: $245 of $300 used - $55 remaining',
 		cats: [
 			{ nm: 'Travel',  ab: 'TV', spent: 0, lim: 15000, extra: '10x pts' },
@@ -68,7 +68,7 @@ const CARDS = [
 		accent: '#3C3489', track: '#7F77DD', cycleBg: '#EEEDFE', catBg: '#E8E6FC',
 		tP: 'var(--color-text-primary)', tS: 'var(--color-text-secondary)', tT: 'var(--color-text-tertiary)',
 		brd: 'var(--color-border-tertiary)', brdFill: 'rgba(0,0,0,.07)',
-		limit: 20000, used: 0, daysLeft: 22, cycleDays: 30, isPoints: false,
+		limit: 20000, used: 0, daysLeft: 30, cycleDays: 30, isPoints: false,
 		note: 'Estimated cash back this cycle: ~$68.10',
 		cats: [
 			{ nm: 'Office',     ab: 'OF', spent: 0,  lim: 800,  extra: '5% back' },
@@ -86,6 +86,13 @@ const STARTER_ALLOCATIONS = [
 	{ name: 'Transport', pct: 0.10 },
 	{ name: 'Daily Treats', pct: 0.15 },
 	{ name: 'Lifestyle', pct: 0.10 }
+];
+
+const TRAVEL_POINT_VALUE = 0.0125;
+const TRAVEL_KEYWORDS = [
+	'airline', 'airlines', 'delta', 'united', 'jetblue', 'southwest',
+	'rental', 'hertz', 'avis', 'budget', 'enterprise',
+	'hotel', 'marriott', 'hilton', 'hyatt', 'expedia', 'booking', 'amtrak'
 ];
 
 function applyStarterCategoryLimits(card) {
@@ -137,6 +144,248 @@ function mkStatus(pct) {
 	return { bg: '#FCEBEB', txt: '#A32D2D', dot: '#A32D2D', lbl: 'High utilization', tip: 'Above 50% can significantly drop your score. Pay down soon.' };
 }
 
+function escapeHTML(value) {
+	return String(value)
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#39;');
+}
+
+function renderCategoryName(name, accentColor) {
+	const match = name.match(/^(.+?)\s*\((.+)\)$/);
+	if (!match) {
+		return `<div class="cn cn-single" style="color:${accentColor};">${escapeHTML(name)}</div>`;
+	}
+
+	const main = match[1].trim();
+	const sub = match[2].trim();
+	return `
+		<div class="cn cn-stacked" style="color:${accentColor};">
+			<div class="cn-main">${escapeHTML(main)}</div>
+			<div class="cn-sub">(${escapeHTML(sub)})</div>
+		</div>`;
+}
+
+function getCategoryLabel(cat) {
+	return cat.label || cat.nm;
+}
+
+const CATEGORY_LAYOUT_STORAGE_KEY = 'credit-journey-category-layout-v1';
+
+function getCategoryCount(card) {
+	return card.categoryCount || card.cats.length;
+}
+
+function createPlaceholderCategory(card, index) {
+	const nextNumber = index + 1;
+	return {
+		nm: `Category ${nextNumber}`,
+		ab: `C${nextNumber}`,
+		spent: 0,
+		lim: Math.max(1, Math.round(card.limit / 5)),
+		extra: '1% back'
+	};
+}
+
+function ensureCategorySlots(card, count) {
+	while (card.cats.length < count) {
+		card.cats.push(createPlaceholderCategory(card, card.cats.length));
+	}
+}
+
+function persistCategoryLayout() {
+	const payload = {};
+	CARDS.forEach((card) => {
+		payload[card.id] = {
+			count: getCategoryCount(card),
+			labels: card.cats.map((cat) => cat.label || '')
+		};
+	});
+	try {
+		localStorage.setItem(CATEGORY_LAYOUT_STORAGE_KEY, JSON.stringify(payload));
+	} catch (error) {
+		// Ignore storage failures.
+	}
+}
+
+function loadCategoryLayout() {
+	try {
+		const raw = localStorage.getItem(CATEGORY_LAYOUT_STORAGE_KEY);
+		if (!raw) {
+			return;
+		}
+
+		const saved = JSON.parse(raw);
+		CARDS.forEach((card) => {
+			const layout = saved?.[card.id];
+			if (!layout) {
+				return;
+			}
+
+			const nextCount = Math.min(5, Math.max(3, Number(layout.count) || card.cats.length));
+			ensureCategorySlots(card, nextCount);
+			card.categoryCount = nextCount;
+			if (Array.isArray(layout.labels)) {
+				layout.labels.forEach((label, index) => {
+					if (card.cats[index] && String(label).trim()) {
+						card.cats[index].label = String(label).trim();
+					}
+				});
+			}
+		});
+	} catch (error) {
+		// Ignore malformed storage data.
+	}
+}
+
+loadCategoryLayout();
+
+const modifyPanel = document.getElementById('modifyPanel');
+const modifyPanelCardLabel = document.getElementById('modifyPanelCardLabel');
+const modifyPanelTitle = document.getElementById('modifyPanelTitle');
+const modifyCounts = document.getElementById('modifyCounts');
+const modifyFields = document.getElementById('modifyFields');
+const modifyCategoriesBtn = document.getElementById('modifyCategoriesBtn');
+const modifyPanelClose = document.getElementById('modifyPanelClose');
+const modifyCancelBtn = document.getElementById('modifyCancelBtn');
+const modifySaveBtn = document.getElementById('modifySaveBtn');
+
+const modifyState = {
+	cardId: CARDS[0]?.id || null,
+	count: 5
+};
+
+function closeModifyPanel() {
+	if (modifyPanel) {
+		modifyPanel.hidden = true;
+	}
+}
+
+function openModifyPanel(cardId) {
+	const card = CARDS.find((c) => c.id === cardId);
+	if (!card || !modifyPanel || !modifyPanelCardLabel || !modifyPanelTitle || !modifyCounts || !modifyFields) {
+		return;
+	}
+
+	modifyState.cardId = card.id;
+	modifyState.count = getCategoryCount(card);
+	modifyPanel.hidden = false;
+	modifyPanelCardLabel.textContent = card.full;
+	modifyPanelTitle.textContent = `Set ${card.name} categories and labels`;
+	modifyCounts.innerHTML = [3, 4, 5].map((count) => `
+		<button class="tb ${count === modifyState.count ? 'act' : ''}" type="button" data-count="${count}">${count} categories</button>
+	`).join('');
+	modifyCounts.querySelectorAll('button').forEach((button) => {
+		button.onclick = () => {
+			modifyState.count = Number(button.dataset.count);
+			openModifyPanel(card.id);
+		};
+	});
+
+	ensureCategorySlots(card, 5);
+	modifyFields.innerHTML = card.cats.slice(0, 5).map((cat, index) => {
+		const isVisible = index < modifyState.count;
+		return `
+			<div class="modify-field" style="display:${isVisible ? 'grid' : 'none'};">
+				<label for="modify-${card.id}-${index}">Category ${index + 1}</label>
+				<input class="gi" id="modify-${card.id}-${index}" type="text" value="${escapeHTML(getCategoryLabel(cat))}" placeholder="Category name" />
+			</div>
+		`;
+	}).join('');
+}
+
+function saveModifyPanel() {
+	const card = CARDS.find((c) => c.id === modifyState.cardId);
+	if (!card || !modifyFields) {
+		return;
+	}
+
+	ensureCategorySlots(card, 5);
+	card.categoryCount = modifyState.count;
+	for (let index = 0; index < modifyState.count; index += 1) {
+		const input = document.getElementById(`modify-${card.id}-${index}`);
+		const nextLabel = String(input?.value ?? '').trim();
+		if (nextLabel) {
+			card.cats[index].label = nextLabel;
+		}
+	}
+
+	persistCategoryLayout();
+	renderPanels();
+	show(activeTabIndex);
+	closeModifyPanel();
+}
+
+function ensureTravelInsights(card) {
+	if (!card || card.id !== 'travel') {
+		return;
+	}
+
+	if (!card.travelInsights) {
+		card.travelInsights = {
+			transactions: [
+				{ merchant: 'Delta Airlines', amount: 420 },
+				{ merchant: 'Hertz Rental Car', amount: 220 },
+				{ merchant: 'Whole Foods', amount: 68 }
+			],
+			bookingAmount: 650
+		};
+	}
+}
+
+function looksLikeTravelMerchant(name) {
+	const value = String(name || '').toLowerCase();
+	return TRAVEL_KEYWORDS.some((keyword) => value.includes(keyword));
+}
+
+function renderTravelInsights(card) {
+	ensureTravelInsights(card);
+	const state = card.travelInsights;
+	const travelMatches = state.transactions.filter((item) => looksLikeTravelMerchant(item.merchant));
+	const bookingAmount = Number(state.bookingAmount) || 0;
+	const directPoints = bookingAmount * 2;
+	const portalPoints = bookingAmount * 5;
+	const extraValue = (portalPoints - directPoints) * TRAVEL_POINT_VALUE;
+	const merchantInputId = `travel-merchant-${card.id}`;
+	const amountInputId = `travel-merchant-amount-${card.id}`;
+	const bookingInputId = `travel-booking-${card.id}`;
+
+	return `<div class="travel-insights">
+		<div class="ti-card">
+			<div class="ti-title">Travel Merchant Detection</div>
+			${travelMatches.length > 0
+				? `<ul class="ti-list">${travelMatches.map((item) => `<li>${escapeHTML(item.merchant)} ($${Number(item.amount || 0).toFixed(2)})</li>`).join('')}</ul>`
+				: '<div class="ti-note">No travel-related merchants detected yet.</div>'
+			}
+			<div class="ti-input-row">
+				<input class="gi" id="${merchantInputId}" type="text" placeholder="Merchant name" />
+				<input class="gi" id="${amountInputId}" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Amount" />
+				<button class="gb" onclick="addTravelTransaction('${card.id}', '${merchantInputId}', '${amountInputId}')" style="background:${card.accent};">Add</button>
+			</div>
+		</div>
+
+		<div class="ti-card ti-tip">
+			<div class="ti-title">Travel Protection Tip</div>
+			<div class="ti-note">You have rental car insurance with this card. You can decline extra coverage.</div>
+		</div>
+
+		<div class="ti-card">
+			<div class="ti-title">Travel Multiplier Calculator</div>
+			<div class="ti-input-row ti-calc-row">
+				<input class="gi" id="${bookingInputId}" type="number" min="0" step="0.01" inputmode="decimal" value="${bookingAmount}" placeholder="Booking amount" />
+				<button class="gb" onclick="updateTravelBooking('${card.id}', '${bookingInputId}')" style="background:${card.accent};">Calculate</button>
+			</div>
+			<div class="ti-metrics">
+				<div>Points via direct booking (2x): <strong>${Math.round(directPoints)}</strong></div>
+				<div>Points via Chase portal (5x): <strong>${Math.round(portalPoints)}</strong></div>
+				<div>Extra value difference: <strong>$${extraValue.toFixed(2)}</strong></div>
+			</div>
+		</div>
+	</div>`;
+}
+
 function renderPanel(c) {
 	const pct = Math.round(c.used / c.limit * 100);
 	const cpct = Math.round((c.cycleDays - c.daysLeft) / c.cycleDays * 100);
@@ -145,8 +394,10 @@ function renderPanel(c) {
 	const cc = c.daysLeft <= 5 ? '#E24B4A' : c.daysLeft <= 10 ? '#BA7517' : c.accent;
 	const panelStyle = c.isDark ? 'background:#1C1A0E;border-radius:var(--border-radius-lg);padding:1.25rem;' : '';
 	const limitInputId = `limit-${c.id}`;
+	const visibleCats = c.cats.slice(0, getCategoryCount(c));
+	const isTravel = c.id === 'travel';
 
-	const cats = c.cats.map((cat) => {
+	const cats = visibleCats.map((cat) => {
 		const cp = Math.round(cat.spent / cat.lim * 100);
 		const over = cp > 100;
 		const bc = over ? '#E24B4A' : cp > 85 ? '#BA7517' : c.accent;
@@ -155,6 +406,7 @@ function renderPanel(c) {
 		const inputId = `ci-${c.id}-${cat.ab}`;
 		const categoryPoints = (c.loopPointsMap && c.loopPointsMap[cat.nm]) || 0;
 		const rewardLabel = c.isPoints ? 'Points earned' : 'Rewards earned';
+		const labelValue = getCategoryLabel(cat);
 		const categoryActions = `<div class="grocery-inline">
 				<div class="gctrl">
 					<input class="gi" id="${inputId}" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Amount ($)" />
@@ -171,7 +423,7 @@ function renderPanel(c) {
 					: `<span class="ctag" style="background:${c.accent}20;color:${c.accent};">${cat.extra}</span>`
 				}
 			</div>
-			<div class="cn" style="color:${c.tS};">${cat.nm}</div>
+			${renderCategoryName(labelValue, c.tS)}
 			<div class="ca" style="color:${c.tP};">${amt}</div>
 			<div class="cf" style="color:${c.tT};">of ${lmt}</div>
 			<div class="mb" style="background:${c.brdFill};"><div class="mf" style="width:${Math.min(100, cp)}%;background:${bc};"></div></div>
@@ -179,6 +431,16 @@ function renderPanel(c) {
 			${categoryActions}
 		</div>`;
 	}).join('');
+
+	const standardInsights = `<button class="ib" id="ib-${c.id}" onclick="getIns('${c.id}')" style="border:0.5px solid ${c.isDark ? 'rgba(255,255,255,.22)' : 'var(--color-border-secondary)'};color:${c.tP};">
+			<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm.75 10.25h-1.5v-4h1.5v4zm0-5.5h-1.5V4.25h1.5V5.75z" fill="currentColor"/></svg>
+			Get personalized tips ->
+		</button>
+		<div id="io-${c.id}" style="margin-top:10px;"></div>`;
+
+	const sectionAfterCycle = isTravel
+		? `<div class="sl" style="color:${c.tT};margin-bottom:7px;">Travel insights</div>${renderTravelInsights(c)}`
+		: `<div class="cg">${cats}</div><div class="sl" style="color:${c.tT};margin-bottom:7px;">Smart insights</div>${standardInsights}`;
 
 	return `<div class="pnl" id="pnl-${c.id}" style="${panelStyle}">
 		<div class="rs">
@@ -205,7 +467,7 @@ function renderPanel(c) {
 				<div>
 					<div class="sl" style="color:${c.tT};">Billing cycle</div>
 					<div class="cd" style="color:${cc};">${c.daysLeft} days left</div>
-					<div class="cs" style="color:${c.tS};">until renewal</div>
+					<div style="font-size:11px;color:${c.tS};">until renewal</div>
 				</div>
 				<div style="text-align:right;">
 					<div style="font-size:11px;color:${c.tT};">Cycle used</div>
@@ -214,14 +476,7 @@ function renderPanel(c) {
 			</div>
 			<div class="bt" style="background:${c.brdFill};"><div class="bf" style="width:${cpct}%;background:${cc};"></div></div>
 		</div>
-		<div class="sl" style="color:${c.tT};margin-bottom:7px;">Spending by category</div>
-		<div class="cg">${cats}</div>
-		<div class="sl" style="color:${c.tT};margin-bottom:7px;">Smart insights</div>
-		<button class="ib" id="ib-${c.id}" onclick="getIns('${c.id}')" style="border:0.5px solid ${c.isDark ? 'rgba(255,255,255,.22)' : 'var(--color-border-secondary)'};color:${c.tP};">
-			<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm.75 10.25h-1.5v-4h1.5v4zm0-5.5h-1.5V4.25h1.5V5.75z" fill="currentColor"/></svg>
-			Get personalized tips ->
-		</button>
-		<div id="io-${c.id}" style="margin-top:10px;"></div>
+		${sectionAfterCycle}
 	</div>`;
 }
 
@@ -231,6 +486,22 @@ let activeTabIndex = 0;
 
 function renderPanels() {
 	panelsEl.innerHTML = CARDS.map((c) => renderPanel(c)).join('');
+}
+
+if (modifyCategoriesBtn) {
+	modifyCategoriesBtn.onclick = () => openModifyPanel(CARDS[activeTabIndex]?.id);
+}
+
+if (modifyPanelClose) {
+	modifyPanelClose.onclick = closeModifyPanel;
+}
+
+if (modifyCancelBtn) {
+	modifyCancelBtn.onclick = closeModifyPanel;
+}
+
+if (modifySaveBtn) {
+	modifySaveBtn.onclick = saveModifyPanel;
 }
 
 CARDS.forEach((c, i) => {
@@ -246,13 +517,19 @@ renderPanels();
 function show(idx) {
 	activeTabIndex = idx;
 	document.querySelectorAll('.pnl').forEach((p, i) => p.classList.toggle('on', i === idx));
-	document.querySelectorAll('.tb').forEach((t, i) => {
+	tabsEl.querySelectorAll('.tb').forEach((t, i) => {
 		const on = i === idx;
 		t.classList.toggle('act', on);
 		t.style.background = on ? CARDS[i].accent : '';
-		t.style.color = on ? '#fff' : '';
-		t.style.borderColor = on ? 'transparent' : '';
+		t.style.color = on ? '#fff' : 'var(--color-text-secondary)';
+		t.style.borderColor = on ? 'transparent' : 'var(--color-border-secondary)';
 	});
+
+	if (modifyCategoriesBtn) {
+		modifyCategoriesBtn.style.background = CARDS[idx]?.accent || '#8B8A84';
+		modifyCategoriesBtn.style.color = '#fff';
+		modifyCategoriesBtn.style.borderColor = 'transparent';
+	}
 }
 
 function getRewardMultiplier(extraLabel) {
@@ -294,6 +571,46 @@ function logCategorySpend(cardId, categoryName, inputId) {
 	show(activeTabIndex);
 }
 
+function addTravelTransaction(cardId, merchantInputId, amountInputId) {
+	const card = CARDS.find((c) => c.id === cardId);
+	if (!card || card.id !== 'travel') {
+		return;
+	}
+
+	ensureTravelInsights(card);
+	const merchantInput = document.getElementById(merchantInputId);
+	const amountInput = document.getElementById(amountInputId);
+	const merchant = String(merchantInput?.value ?? '').trim();
+	const amount = Number(amountInput?.value ?? 0);
+	if (!merchant || !Number.isFinite(amount) || amount < 0) {
+		return;
+	}
+
+	card.travelInsights.transactions.unshift({ merchant, amount });
+	card.travelInsights.transactions = card.travelInsights.transactions.slice(0, 8);
+	if (merchantInput) merchantInput.value = '';
+	if (amountInput) amountInput.value = '';
+	renderPanels();
+	show(activeTabIndex);
+}
+
+function updateTravelBooking(cardId, inputId) {
+	const card = CARDS.find((c) => c.id === cardId);
+	if (!card || card.id !== 'travel') {
+		return;
+	}
+
+	ensureTravelInsights(card);
+	const input = document.getElementById(inputId);
+	const value = Number(input?.value ?? 0);
+	if (!Number.isFinite(value) || value < 0) {
+		return;
+	}
+	card.travelInsights.bookingAmount = value;
+	renderPanels();
+	show(activeTabIndex);
+}
+
 function updateCreditLimit(cardId, inputId) {
 	const card = CARDS.find((c) => c.id === cardId);
 	if (!card) {
@@ -331,6 +648,7 @@ function updateCreditLimit(cardId, inputId) {
 	show(activeTabIndex);
 }
 
+		persistCategoryLayout();
 async function getIns(id) {
 	const c = CARDS.find((x) => x.id === id);
 	const btn = document.getElementById(`ib-${id}`);

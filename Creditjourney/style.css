@@ -34,6 +34,95 @@ body {
   margin: 0 auto;
 }
 
+.top-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.modify-panel {
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  background: var(--color-background-secondary);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.modify-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.modify-panel-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.modify-panel-close {
+  border: 0.5px solid var(--color-border-secondary);
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-radius: 18px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.modify-counts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.modify-counts .tb {
+  border-radius: 18px;
+}
+
+.modify-counts .act {
+  color: #fff;
+}
+
+.modify-fields {
+  display: grid;
+  gap: 10px;
+}
+
+.modify-field {
+  display: grid;
+  gap: 6px;
+}
+
+.modify-field label {
+  font-size: 11px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.modify-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.modify-secondary,
+.modify-save {
+  width: auto;
+  padding: 7px 12px;
+}
+
+.modify-save {
+  background: var(--color-text-primary);
+  color: var(--color-background-primary);
+}
+
 .tabs {
   display: flex;
   gap: 6px;
@@ -52,13 +141,23 @@ body {
   font-size: 12px;
   cursor: pointer;
   border: 0.5px solid var(--color-border-secondary);
-  background: transparent;
+  background: var(--color-background-secondary);
   color: var(--color-text-secondary);
   font-family: inherit;
   transition: background .15s, color .15s;
 }
 
 .tb:hover:not(.act) { background: var(--color-background-secondary); }
+
+.modify-btn {
+  background: #8B8A84;
+  color: #fff;
+  border: 0.5px solid transparent;
+  width: auto;
+  padding-left: 14px;
+  padding-right: 14px;
+  transition: background .15s, color .15s, border-color .15s;
+}
 
 .pnl { display: none; }
 
@@ -116,7 +215,15 @@ body {
 .ci { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
 .cx { width: 28px; height: 28px; border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
 .ctag { font-size: 11px; padding: 2px 6px; border-radius: 4px; }
-.cn { font-size: 11px; margin-bottom: 2px; }
+.cn { margin-bottom: 2px; }
+.cn-single {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+.cn-stacked { line-height: 1.1; }
+.cn-main { font-size: 13px; font-weight: 700; }
+.cn-sub { font-size: 10px; font-weight: 500; opacity: 0.82; margin-top: 2px; }
 .ca { font-size: 15px; font-weight: 500; }
 .cf { font-size: 11px; margin-bottom: 5px; }
 .mb { height: 3px; border-radius: 2px; overflow: hidden; margin-bottom: 3px; }
@@ -151,3 +258,72 @@ body {
 .it { font-size: 12px; font-weight: 500; margin-bottom: 3px; }
 .iy { font-size: 11px; line-height: 1.55; }
 .lm { text-align: center; padding: .75rem; font-size: 12px; }
+
+.travel-insights {
+  display: grid;
+  gap: 8px;
+}
+
+.ti-card {
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  background: var(--color-background-secondary);
+  padding: 10px;
+}
+
+.ti-title {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--color-text-primary);
+}
+
+.ti-note {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.ti-list {
+  padding-left: 16px;
+  font-size: 12px;
+  color: var(--color-text-primary);
+  margin-bottom: 8px;
+}
+
+.ti-list li {
+  margin-bottom: 3px;
+}
+
+.ti-input-row {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr;
+}
+
+.ti-calc-row {
+  grid-template-columns: 1fr;
+}
+
+.ti-metrics {
+  margin-top: 8px;
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.ti-tip {
+  border-color: #cfc8f7;
+  background: #f4f1ff;
+}
+
+@media (min-width: 720px) {
+  .ti-input-row {
+    grid-template-columns: 1fr 1fr auto;
+    align-items: end;
+  }
+
+  .ti-calc-row {
+    grid-template-columns: 1fr auto;
+  }
+}
