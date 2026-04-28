@@ -354,23 +354,24 @@ body {
   20%, 40%, 60%, 80% { transform: translateX(2px); }
 }
 
-@keyframes red-glow {
+@keyframes yellow-glow {
   0%, 100% { 
-    box-shadow: 0 0 0 0px rgba(226, 75, 74, 0.4),
-                0 0 4px 0px rgba(226, 75, 74, 0.2);
-    border-color: rgba(226, 75, 74, 0.3);
+    box-shadow: 0 0 0 0px rgba(255, 213, 74, 0.35),
+                0 0 4px 0px rgba(255, 213, 74, 0.18);
+    border-color: rgba(191, 140, 0, 0.25);
   }
   50% { 
-    box-shadow: 0 0 0 3px rgba(226, 75, 74, 0.2),
-                0 0 12px 2px rgba(226, 75, 74, 0.35);
-    border-color: rgba(226, 75, 74, 0.5);
+    box-shadow: 0 0 0 3px rgba(255, 213, 74, 0.16),
+                0 0 12px 2px rgba(255, 213, 74, 0.28);
+    border-color: rgba(191, 140, 0, 0.42);
   }
 }
 
 .ck[data-near-limit] {
   animation: vibrate 0.5s ease-in-out infinite, 
-             red-glow 2s ease-in-out infinite;
-  background: rgba(226, 75, 74, 0.06) !important;
+             yellow-glow 2s ease-in-out infinite;
+  background: rgba(255, 213, 74, 0.22) !important;
+  border-color: rgba(191, 140, 0, 0.38) !important;
   position: relative;
   overflow: visible;
 }

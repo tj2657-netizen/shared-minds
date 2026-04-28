@@ -400,22 +400,24 @@ function renderPanel(c) {
 	const cats = visibleCats.map((cat) => {
 		const cp = Math.round(cat.spent / cat.lim * 100);
 		const over = cp > 100;
-		const bc = over ? '#E24B4A' : cp > 85 ? '#BA7517' : c.accent;
+		const bc = over ? '#E24B4A' : (c.id === 'starter' && cp > 70 ? c.accent : cp > 85 ? '#BA7517' : c.accent);
 		const amt = c.isPoints ? `${cat.spent.toLocaleString()} pts` : `$${cat.spent}`;
 		const lmt = c.isPoints ? `${cat.lim.toLocaleString()} pts` : `$${cat.lim}`;
 		const inputId = `ci-${c.id}-${cat.ab}`;
 		const categoryPoints = (c.loopPointsMap && c.loopPointsMap[cat.nm]) || 0;
 		const rewardLabel = c.isPoints ? 'Points earned' : 'Rewards earned';
 		const labelValue = getCategoryLabel(cat);
+		const isStarterNearLimit = c.id === 'starter' && cp > 70;
+		const bgColor = cp > 70 ? 'rgba(255, 213, 74, 0.22)' : c.catBg;
 		const categoryActions = `<div class="grocery-inline">
 				<div class="gctrl">
 					<input class="gi" id="${inputId}" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Amount ($)" />
-					<button class="gb${cp > 70 ? ' warning' : ''}" onclick="logCategorySpend('${c.id}', '${cat.nm}', '${inputId}')" style="background:${cp > 70 ? '#FFD54A' : c.accent}; color:${cp > 70 ? '#2b2b00' : '#fff'}">Add</button>
+					<button class="gb${cp > 70 && !isStarterNearLimit ? ' warning' : ''}" onclick="logCategorySpend('${c.id}', '${cat.nm}', '${inputId}')" style="background:${isStarterNearLimit ? c.accent : cp > 70 ? '#FFD54A' : c.accent}; color:${cp > 70 && !isStarterNearLimit ? '#2b2b00' : '#fff'}">Add</button>
 				</div>
 				<div class="gp" style="color:${c.tS};">${rewardLabel}: <strong style="color:${c.tP};">${categoryPoints}</strong></div>
 			</div>`;
 
-		return `<div class="ck" style="background:${c.catBg};border:0.5px solid ${c.brd};">
+			return `<div class="ck" ${cp > 70 ? 'data-near-limit' : ''} style="background:${bgColor};border:0.5px solid ${c.brd};";
 			<div class="ci">
 				<div class="cx" style="background:${bc}25;color:${bc};">${cat.ab}</div>
 				${over

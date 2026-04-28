@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Credit Journey Dashboard - 5 Card Types</title>
+	<script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth-compat.js"></script>
   <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -51,8 +53,97 @@ body {
 
 .top-actions {
   display: flex;
-  justify-content: flex-end;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
   margin-bottom: 1rem;
+}
+
+.top-actions-left,
+.top-actions-right {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.limit-dropdown-wrap {
+	position: relative;
+	display: inline-block;
+}
+
+.limit-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	width: 100%;
+	min-width: 220px;
+	border: 0.5px solid var(--color-border-secondary);
+	border-radius: 26px;
+	background: #fff;
+	color: var(--color-text-primary);
+	font: inherit;
+	padding: 8px 14px;
+	cursor: pointer;
+	box-shadow: var(--shadow-flat-btn);
+	transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.limit-toggle:hover {
+	background: var(--color-background-secondary);
+}
+
+.limit-chevron {
+	font-size: 12px;
+	transition: transform .18s ease;
+}
+
+.limit-dropdown-wrap[open] .limit-chevron {
+	transform: rotate(180deg);
+}
+
+.limit-menu {
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 0;
+	z-index: 30;
+	min-width: 280px;
+	background: var(--color-background-primary);
+	border: 0.5px solid var(--color-border-tertiary);
+	border-radius: var(--border-radius-lg);
+	box-shadow: var(--shadow-flat-card);
+	padding: 12px;
+	display: grid;
+	gap: 10px;
+	max-width: 92vw;
+}
+
+.limit-presets {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.limit-preset {
+	width: auto;
+	padding: 6px 10px;
+	border-radius: 999px;
+	font-size: 12px;
+	box-shadow: var(--shadow-flat-btn);
+}
+
+.limit-preset.act {
+	color: #fff;
+	border-color: transparent;
+}
+
+.limit-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	flex-wrap: wrap;
 }
 
 .modify-panel {
@@ -121,11 +212,48 @@ body {
   gap: 6px;
 }
 
+.modify-field-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 110px;
+	gap: 8px;
+}
+
 .modify-field label {
   font-size: 11px;
   letter-spacing: .07em;
   text-transform: uppercase;
   color: var(--color-text-secondary);
+}
+
+.modify-budget-preview {
+	font-size: 12px;
+	color: var(--color-text-secondary);
+}
+
+.modify-summary {
+	border: 0.5px solid var(--color-border-tertiary);
+	border-radius: var(--border-radius-lg);
+	background: var(--color-background-secondary);
+	padding: 10px 12px;
+	margin-top: 4px;
+	display: grid;
+	gap: 4px;
+	font-size: 12px;
+	color: var(--color-text-secondary);
+}
+
+.modify-summary strong {
+	color: var(--color-text-primary);
+}
+
+.modify-summary-warn {
+	border-color: #e59f3d;
+	background: #fff7e8;
+}
+
+.modify-summary-note {
+	font-size: 11px;
+	line-height: 1.45;
 }
 
 .modify-actions {
@@ -157,6 +285,99 @@ body {
 .modify-save {
   background: var(--color-text-primary);
   color: var(--color-background-primary);
+}
+
+.modify-save:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+	transform: none;
+	box-shadow: var(--shadow-flat-btn);
+}
+
+.limit-box {
+	margin-top: 12px;
+	border-radius: var(--border-radius-lg);
+	padding: 12px;
+	text-align: left;
+	box-shadow: var(--shadow-flat-card);
+}
+
+.limit-dropdown {
+	display: grid;
+	gap: 10px;
+}
+
+.limit-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	width: 100%;
+	border: 0.5px solid var(--color-border-secondary);
+	border-radius: var(--border-radius-lg);
+	background: var(--color-background-primary);
+	color: var(--color-text-primary);
+	font: inherit;
+	padding: 10px 12px;
+	cursor: pointer;
+	box-shadow: var(--shadow-flat-btn);
+}
+
+.limit-toggle:hover {
+	background: var(--color-background-secondary);
+}
+
+.limit-toggle strong {
+	font-size: 14px;
+}
+
+.limit-toggle small {
+	display: block;
+	font-size: 11px;
+	color: var(--color-text-secondary);
+	font-weight: 500;
+	margin-top: 2px;
+}
+
+.limit-chevron {
+	font-size: 12px;
+	transition: transform .18s ease;
+}
+
+.limit-dropdown[open] .limit-chevron {
+	transform: rotate(180deg);
+}
+
+.limit-menu {
+	display: grid;
+	gap: 10px;
+	padding-top: 2px;
+}
+
+.limit-presets {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.limit-preset {
+	width: auto;
+	padding: 6px 10px;
+	border-radius: 999px;
+	font-size: 12px;
+	box-shadow: var(--shadow-flat-btn);
+}
+
+.limit-preset.act {
+	color: #fff;
+	border-color: transparent;
+}
+
+.limit-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	flex-wrap: wrap;
 }
 
 .tabs {
@@ -216,13 +437,6 @@ body {
 .rm { font-size: 11px; margin-top: 2px; }
 .bdg { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; margin-bottom: 4px; }
 .tt { font-size: 11px; max-width: 280px; margin: 0 auto; line-height: 1.5; }
-.limit-box {
-  margin-top: 12px;
-  border-radius: var(--border-radius-lg);
-  padding: 12px;
-  text-align: left;
-	box-shadow: var(--shadow-flat-card);
-}
 .cc { border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.25rem; box-shadow: var(--shadow-flat-card); }
 .lp { border-radius: var(--border-radius-lg); padding: 12px; margin-bottom: 1.25rem; box-shadow: var(--shadow-flat-card); }
 .grocery-inline { margin-top: 8px; }
@@ -821,28 +1035,47 @@ body {
 <body>
   <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Credit Journey Dashboard - 5 Card Types</h1>
 
-  <div class="top-actions">
-    <button class="gb modify-btn" id="modifyCategoriesBtn" type="button">Modify Categories</button>
-  </div>
-  <div class="modify-panel" id="modifyPanel" hidden>
-    <div class="modify-panel-head">
-      <div>
-        <div class="sl" id="modifyPanelCardLabel">Modify categories</div>
-        <div class="modify-panel-title" id="modifyPanelTitle">Choose a card and category count</div>
-      </div>
-      <button class="modify-panel-close" id="modifyPanelClose" type="button">Close</button>
-    </div>
-    <div class="modify-counts" id="modifyCounts"></div>
-    <div class="modify-fields" id="modifyFields"></div>
-    <div class="modify-actions">
-      <button class="tb modify-secondary" id="modifyCancelBtn" type="button">Cancel</button>
-      <button class="tb modify-save" id="modifySaveBtn" type="button">Save changes</button>
-    </div>
-  </div>
+	<div class="top-actions">
+		<div class="top-actions-left">
+				<details class="limit-dropdown-wrap" id="limitDropdown"></details>
+				<details class="modify-panel limit-dropdown-wrap" id="modifyPanel">
+					<summary class="limit-toggle" aria-haspopup="true" style="background:var(--color-background-primary);">Modify Categories <span class="limit-chevron" aria-hidden="true">▾</span></summary>
+					<div class="modify-panel-head">
+						<div>
+							<div class="sl" id="modifyPanelCardLabel">Modify categories</div>
+							<div class="modify-panel-title" id="modifyPanelTitle">Edit category labels and percentage limits</div>
+						</div>
+						<button class="modify-panel-close" id="modifyPanelClose" type="button">Close</button>
+					</div>
+					<div class="modify-fields" id="modifyFields"></div>
+					<div class="modify-summary" id="modifySummary"></div>
+					<div class="modify-actions">
+						<button class="tb modify-secondary" id="modifyCancelBtn" type="button">Cancel</button>
+						<button class="tb modify-save" id="modifySaveBtn" type="button">Save changes</button>
+					</div>
+				</details>
+		</div>
+		<div class="top-actions-right">
+			<button class="gb modify-btn" id="signOutBtn" type="button">Log out</button>
+		</div>
+	</div>
   <div class="tabs" id="tabs"></div>
   <div id="panels"></div>
 
   <script>
+const firebaseConfig = {
+	apiKey: "AIzaSyDRwFX_x7oOHDRIPReV3aP5XMZSwbyM2EM",
+	authDomain: "shared-minds-projects.firebaseapp.com",
+	projectId: "shared-minds-projects",
+	storageBucket: "shared-minds-projects.firebasestorage.app",
+	messagingSenderId: "184678682137",
+	appId: "1:184678682137:web:8c68cb762f3032586a2488",
+	measurementId: "G-PGB199FS50"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
 const CARDS = [
 	{
 		id: 'starter', name: 'Starter', full: 'Chase Freedom Rise', sub: 'Build your credit',
@@ -851,6 +1084,7 @@ const CARDS = [
 		brd: 'var(--color-border-tertiary)', brdFill: 'rgba(0,0,0,.07)',
 		limit: 800, used: 0, daysLeft: 30, cycleDays: 30, isPoints: false,
 		limitRange: '$500-$2,000',
+		allowedLimits: [500, 800, 1000, 1500, 2000],
 		note: 'Pay on time. Keep usage under 30%.',
 		cats: [
 			{ nm: 'Essentials (Groceries & Basic Needs)', ab: 'GR', spent: 0, lim: 150, extra: '1% back' },
@@ -868,6 +1102,7 @@ const CARDS = [
 		brd: 'var(--color-border-tertiary)', brdFill: 'rgba(0,0,0,.07)',
 		limit: 5000, used: 0, daysLeft: 30, cycleDays: 30, isPoints: false,
 		limitRange: '$500-$20000+',
+		allowedLimits: [500, 800, 1000, 1500, 2000, 3000, 5000, 7500, 10000, 15000, 20000],
 		note: 'Estimated cash back this cycle: ~$14.85',
 		cats: [
 			{ nm: 'Reward-Optimized Spending (Groceries, Dining, Drugstores)', ab: 'RS', spent: 0, lim: 900,  extra: '3-5% back' },
@@ -883,6 +1118,7 @@ const CARDS = [
 		tP: 'var(--color-text-primary)', tS: 'var(--color-text-secondary)', tT: 'var(--color-text-tertiary)',
 		brd: 'var(--color-border-tertiary)', brdFill: 'rgba(0,0,0,.07)',
 		limit: 12000, used: 0, daysLeft: 30, cycleDays: 30, isPoints: true,
+		allowedLimits: [5000, 7500, 10000, 12000, 15000, 20000],
 		note: 'Points balance: 47,200 pts ~= $590 in travel redemptions',
 		cats: [
 			{ nm: 'Travel',  ab: 'TV', spent: 0, lim: 5000,  extra: '5x pts' },
@@ -899,6 +1135,7 @@ const CARDS = [
 		tP: '#F0DEC8', tS: '#A89070', tT: '#705E48',
 		brd: 'rgba(255,255,255,.12)', brdFill: 'rgba(255,255,255,.08)',
 		limit: 25000, used: 0, daysLeft: 30, cycleDays: 30, isPoints: true,
+		allowedLimits: [10000, 15000, 20000, 25000, 30000, 40000, 50000],
 		note: 'Annual travel credit: $245 of $300 used - $55 remaining',
 		cats: [
 			{ nm: 'Travel',  ab: 'TV', spent: 0, lim: 15000, extra: '10x pts' },
@@ -914,6 +1151,7 @@ const CARDS = [
 		tP: 'var(--color-text-primary)', tS: 'var(--color-text-secondary)', tT: 'var(--color-text-tertiary)',
 		brd: 'var(--color-border-tertiary)', brdFill: 'rgba(0,0,0,.07)',
 		limit: 20000, used: 0, daysLeft: 30, cycleDays: 30, isPoints: false,
+		allowedLimits: [5000, 10000, 15000, 20000, 25000, 30000],
 		note: 'Estimated cash back this cycle: ~$68.10',
 		cats: [
 			{ nm: 'Office',     ab: 'OF', spent: 0,  lim: 800,  extra: '5% back' },
@@ -932,6 +1170,9 @@ const STARTER_ALLOCATIONS = [
 	{ name: 'Daily Treats', pct: 0.15 },
 	{ name: 'Lifestyle', pct: 0.10 }
 ];
+
+const MIN_CATEGORY_COUNT = 3;
+const MAX_CATEGORY_COUNT = 6;
 
 const TRAVEL_POINT_VALUE = 0.0125;
 const TRAVEL_KEYWORDS = [
@@ -972,13 +1213,26 @@ function applyStarterCategoryLimits(card) {
 		}
 
 		if (idx === STARTER_ALLOCATIONS.length - 1) {
-			cat.lim = Math.max(0, Math.round(card.limit - assigned));
+			cat.pct = Math.max(0, Math.round(100 - assigned));
+			cat.lim = getCategoryBudget(card, cat.pct);
 			return;
 		}
 
-		const allocation = Math.round(card.limit * rule.pct);
-		cat.lim = allocation;
+		const allocation = Math.round(rule.pct * 100);
+		cat.pct = allocation;
+		cat.lim = getCategoryBudget(card, cat.pct);
 		assigned += allocation;
+	});
+}
+
+function syncCategoryBudgets(card) {
+	if (!card) {
+		return;
+	}
+
+	card.cats.forEach((cat) => {
+		cat.pct = clampPercent(getCategoryPercent(card, cat));
+		cat.lim = getCategoryBudget(card, cat.pct);
 	});
 }
 
@@ -1184,6 +1438,30 @@ function renderCategoryName(name, accentColor) {
 }
 
 function getCategoryIcon(categoryName) {
+	const value = String(categoryName || '').trim().toLowerCase();
+	if (!value) {
+		return '💳';
+	}
+
+	const iconLookup = [
+		{ test: /(shoe|shoes|footwear|sneaker|sneakers|boot|boots)/, icon: '👟' },
+		{ test: /(ads|ad\s*&\s*mktg|ads\s*&\s*marketing|marketing|marketi[ng]+)/, icon: '📣' },
+		{ test: /(software|app|apps|computer|code|coding|tech|technology|program|programming)/, icon: '💻' },
+		{ test: /(travel|trip|vacation|flight|airline|airplane|aero|plane)/, icon: '✈️' },
+		{ test: /(hotel|hotels|lodging|stay|room|resort|inn)/, icon: '🏨' },
+		{ test: /(lifestyle|entertain|hobby|fun|leisure|shopping|games|experience)/, icon: '🛍️' },
+		{ test: /(transport|transit|uber|lyft|ride|commute|gas|fuel|car|vehicle)/, icon: '🚗' },
+		{ test: /(treat|snack|food|coffee|dining|lunch|breakfast|grocery|grocer)/, icon: '🍽️' },
+		{ test: /(garden|gardening|plant|plants|yard|outdoor|home)/, icon: '🌿' },
+		{ test: /(bill|utility|utilities|rent|phone|internet|subscription)/, icon: '🧾' },
+		{ test: /(office|business|work|suppl)/, icon: '🏢' },
+	];
+
+	const matched = iconLookup.find((entry) => entry.test.test(value));
+	if (matched) {
+		return matched.icon;
+	}
+
 	return CATEGORY_ICONS[categoryName] || '💳';
 }
 
@@ -1212,7 +1490,7 @@ function showCatPopup(cardId, catAb, text) {
 	}, 900);
 }
 
-function launchConfettiAt(element, count = 28) {
+function launchConfettiAt(element, count = 28, themeColors = null) {
 	if (!element) return;
 	// play sparkling glitter sound for celebration
 	try { playSparkleSound(); } catch (e) {}
@@ -1227,7 +1505,7 @@ function launchConfettiAt(element, count = 28) {
 	document.body.appendChild(canvas);
 
 	const ctx = canvas.getContext('2d');
-	const colors = ['#ff4b5c','#ffb86b','#ffd86b','#7be495','#5ad0f5','#9b88ff'];
+	const colors = Array.isArray(themeColors) && themeColors.length ? themeColors : ['#ff4b5c','#ffb86b','#ffd86b','#7be495','#5ad0f5','#9b88ff'];
 	const pieces = [];
 
 	for (let i=0;i<count;i++) {
@@ -1351,6 +1629,76 @@ function getCategoryLabel(cat) {
 	return cat.label || cat.nm;
 }
 
+function formatMoney(value) {
+	return `$${Math.round(Number(value) || 0).toLocaleString()}`;
+}
+
+function hexToRgb(hex) {
+	const value = String(hex || '').trim().replace('#', '');
+	if (!/^([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value)) {
+		return null;
+	}
+	const full = value.length === 3 ? value.split('').map((part) => part + part).join('') : value;
+	const intValue = Number.parseInt(full, 16);
+	return {
+		r: (intValue >> 16) & 255,
+		g: (intValue >> 8) & 255,
+		b: intValue & 255
+	};
+}
+
+function rgbToHex(r, g, b) {
+	return `#${[r, g, b].map((part) => Math.max(0, Math.min(255, Math.round(part))).toString(16).padStart(2, '0')).join('')}`;
+}
+
+function mixHexColors(baseHex, mixHex, ratio) {
+	const base = hexToRgb(baseHex);
+	const mix = hexToRgb(mixHex);
+	if (!base || !mix) {
+		return baseHex;
+	}
+	const t = Math.max(0, Math.min(1, Number(ratio) || 0));
+	return rgbToHex(
+		base.r + (mix.r - base.r) * t,
+		base.g + (mix.g - base.g) * t,
+		base.b + (mix.b - base.b) * t
+	);
+}
+
+function getThemeConfettiColors(card) {
+	const accent = card?.accent || '#5ad0f5';
+	const track = card?.track || accent;
+	const cycleBg = card?.cycleBg || '#ffffff';
+	const catBg = card?.catBg || cycleBg;
+	return [
+		accent,
+		track,
+		mixHexColors(accent, '#ffffff', 0.28),
+		mixHexColors(accent, '#000000', 0.18),
+		mixHexColors(track, '#ffffff', 0.22),
+		catBg,
+		cycleBg
+	];
+}
+
+function clampPercent(value) {
+	return Math.max(0, Math.min(100, Number(value) || 0));
+}
+
+function getCategoryPercent(card, cat) {
+	if (Number.isFinite(Number(cat.pct))) {
+		return clampPercent(cat.pct);
+	}
+	if (Number.isFinite(Number(cat.lim)) && Number.isFinite(Number(card.limit)) && Number(card.limit) > 0) {
+		return clampPercent((Number(cat.lim) / Number(card.limit)) * 100);
+	}
+	return 0;
+}
+
+function getCategoryBudget(card, pct) {
+	return Math.max(0, Math.round((Number(card.limit) || 0) * clampPercent(pct) / 100));
+}
+
 const CATEGORY_LAYOUT_STORAGE_KEY = 'credit-journey-category-layout-v1';
 
 function getCategoryCount(card) {
@@ -1363,7 +1711,8 @@ function createPlaceholderCategory(card, index) {
 		nm: `Category ${nextNumber}`,
 		ab: `C${nextNumber}`,
 		spent: 0,
-		lim: Math.max(1, Math.round(card.limit / 5)),
+		lim: 0,
+		pct: 0,
 		extra: '1% back'
 	};
 }
@@ -1379,7 +1728,8 @@ function persistCategoryLayout() {
 	CARDS.forEach((card) => {
 		payload[card.id] = {
 			count: getCategoryCount(card),
-			labels: card.cats.map((cat) => cat.label || '')
+			labels: card.cats.map((cat) => cat.label || ''),
+			pcts: card.cats.map((cat) => getCategoryPercent(card, cat))
 		};
 	});
 	try {
@@ -1403,13 +1753,20 @@ function loadCategoryLayout() {
 				return;
 			}
 
-			const nextCount = Math.min(5, Math.max(3, Number(layout.count) || card.cats.length));
+			const nextCount = Math.min(6, Math.max(3, Number(layout.count) || card.cats.length));
 			ensureCategorySlots(card, nextCount);
 			card.categoryCount = nextCount;
 			if (Array.isArray(layout.labels)) {
 				layout.labels.forEach((label, index) => {
 					if (card.cats[index] && String(label).trim()) {
 						card.cats[index].label = String(label).trim();
+					}
+				});
+			}
+			if (Array.isArray(layout.pcts)) {
+				layout.pcts.forEach((pct, index) => {
+					if (card.cats[index]) {
+						card.cats[index].pct = clampPercent(pct);
 					}
 				});
 			}
@@ -1421,12 +1778,30 @@ function loadCategoryLayout() {
 
 loadCategoryLayout();
 
+CARDS.forEach((card) => {
+	ensureCategorySlots(card, MAX_CATEGORY_COUNT);
+	if (card.id === 'starter') {
+		STARTER_ALLOCATIONS.forEach((rule) => {
+			const cat = card.cats.find((c) => c.nm === rule.name);
+			if (cat && !Number.isFinite(Number(cat.pct))) {
+				cat.pct = Math.round(rule.pct * 100);
+			}
+		});
+	}
+	card.cats.forEach((cat) => {
+		if (!Number.isFinite(Number(cat.pct))) {
+			cat.pct = getCategoryPercent(card, cat);
+		}
+		cat.lim = getCategoryBudget(card, cat.pct);
+	});
+});
+
 const modifyPanel = document.getElementById('modifyPanel');
 const modifyPanelCardLabel = document.getElementById('modifyPanelCardLabel');
 const modifyPanelTitle = document.getElementById('modifyPanelTitle');
-const modifyCounts = document.getElementById('modifyCounts');
 const modifyFields = document.getElementById('modifyFields');
-const modifyCategoriesBtn = document.getElementById('modifyCategoriesBtn');
+const modifySummary = document.getElementById('modifySummary');
+const modifyPanelSummary = modifyPanel ? modifyPanel.querySelector('summary') : null;
 const modifyPanelClose = document.getElementById('modifyPanelClose');
 const modifyCancelBtn = document.getElementById('modifyCancelBtn');
 const modifySaveBtn = document.getElementById('modifySaveBtn');
@@ -1438,41 +1813,184 @@ const modifyState = {
 
 function closeModifyPanel() {
 	if (modifyPanel) {
-		modifyPanel.hidden = true;
+		if (typeof modifyPanel.open !== 'undefined') modifyPanel.open = false;
 	}
+}
+
+function updateModifyPreview() {
+	const card = CARDS.find((c) => c.id === modifyState.cardId);
+	if (!card || !modifySummary || !modifyFields) {
+		return;
+	}
+
+	const rows = Array.from(modifyFields.querySelectorAll('[data-category-row]')).slice(0, modifyState.count);
+	let totalPct = 0;
+	let totalBudget = 0;
+
+	rows.forEach((row) => {
+		const pctInput = row.querySelector('[data-pct-input]');
+		const preview = row.querySelector('[data-budget-preview]');
+		const pct = clampPercent(pctInput?.value);
+		const budget = getCategoryBudget(card, pct);
+		totalPct += pct;
+		totalBudget += budget;
+		if (preview) {
+			preview.textContent = `${pct}% = ${formatMoney(budget)}/mo`;
+		}
+	});
+
+	const remainingPct = Math.max(0, 100 - totalPct);
+	const remainingBudget = Math.max(0, (Number(card.limit) || 0) - totalBudget);
+	const isTotalValid = Math.round(totalPct) === 100;
+	modifySummary.className = `modify-summary ${totalPct > 100 ? 'modify-summary-warn' : ''}`.trim();
+	modifySummary.innerHTML = `
+		<div><strong>Total allocated:</strong> ${totalPct.toFixed(0)}% of 100% = ${formatMoney(totalBudget)}/mo</div>
+		<div><strong>Remaining:</strong> ${remainingPct.toFixed(0)}% = ${formatMoney(remainingBudget)}/mo</div>
+		<div class="modify-summary-note">Formula: monthly budget = credit limit × category percentage ÷ 100. The total must equal 100% before saving.</div>
+	`;
+	if (modifySaveBtn) {
+		modifySaveBtn.disabled = !isTotalValid;
+		modifySaveBtn.title = isTotalValid ? 'Save changes' : 'Category percentages must total 100%';
+	}
+}
+
+function clampModifyCategoryPercent(input) {
+	const card = CARDS.find((c) => c.id === modifyState.cardId);
+	if (!card || !input || !modifyFields) {
+		return;
+	}
+
+	const rows = Array.from(modifyFields.querySelectorAll('[data-category-row]')).slice(0, modifyState.count);
+	const currentRow = input.closest('[data-category-row]');
+	const otherTotal = rows.reduce((sum, row) => {
+		if (row === currentRow) {
+			return sum;
+		}
+		const pctInput = row.querySelector('[data-pct-input]');
+		return sum + clampPercent(pctInput?.value);
+	}, 0);
+	const allowed = Math.max(0, 100 - otherTotal);
+	const nextValue = Math.min(clampPercent(input.value), allowed);
+	input.value = String(nextValue);
+	updateModifyPreview();
+}
+
+function setModifyCategoryCount(nextCount) {
+	const card = CARDS.find((c) => c.id === modifyState.cardId);
+	if (!card) {
+		return;
+	}
+
+	const clampedCount = Math.min(MAX_CATEGORY_COUNT, Math.max(MIN_CATEGORY_COUNT, Number(nextCount) || MIN_CATEGORY_COUNT));
+	if (clampedCount < card.cats.length) {
+		card.cats = card.cats.slice(0, clampedCount);
+	}
+	modifyState.count = clampedCount;
+	openModifyPanel(card.id);
+}
+
+function normalizeCategoryOrder(card) {
+	if (!card || !Array.isArray(card.cats)) {
+		return;
+	}
+
+	card.cats.forEach((cat, index) => {
+		cat.ab = `C${index + 1}`;
+	});
+}
+
+function addModifyCategory(index) {
+	const card = CARDS.find((c) => c.id === modifyState.cardId);
+	if (!card || modifyState.count >= MAX_CATEGORY_COUNT) {
+		return;
+	}
+
+	if (index < 0 || index >= modifyState.count) {
+		return;
+	}
+
+	const insertAt = Math.min(index + 1, card.cats.length);
+	card.cats.splice(insertAt, 0, createPlaceholderCategory(card, insertAt));
+	card.categoryCount = Math.min(MAX_CATEGORY_COUNT, modifyState.count + 1);
+	normalizeCategoryOrder(card);
+	modifyState.count = card.categoryCount;
+	openModifyPanel(card.id);
+}
+
+function removeModifyCategory(index) {
+	const card = CARDS.find((c) => c.id === modifyState.cardId);
+	if (!card || modifyState.count <= MIN_CATEGORY_COUNT) {
+		return;
+	}
+
+	if (index < 0 || index >= modifyState.count) {
+		return;
+	}
+
+	card.cats.splice(index, 1);
+	card.categoryCount = Math.max(MIN_CATEGORY_COUNT, modifyState.count - 1);
+	normalizeCategoryOrder(card);
+	modifyState.count = card.categoryCount;
+	openModifyPanel(card.id);
 }
 
 function openModifyPanel(cardId) {
 	const card = CARDS.find((c) => c.id === cardId);
-	if (!card || !modifyPanel || !modifyPanelCardLabel || !modifyPanelTitle || !modifyCounts || !modifyFields) {
+	if (!card || !modifyPanel || !modifyPanelCardLabel || !modifyPanelTitle || !modifyFields || !modifySummary) {
 		return;
 	}
 
 	modifyState.cardId = card.id;
-	modifyState.count = getCategoryCount(card);
-	modifyPanel.hidden = false;
+	modifyState.count = Math.min(MAX_CATEGORY_COUNT, Math.max(MIN_CATEGORY_COUNT, getCategoryCount(card)));
+	if (typeof modifyPanel.open !== 'undefined') modifyPanel.open = true;
 	modifyPanelCardLabel.textContent = card.full;
-	modifyPanelTitle.textContent = `Set ${card.name} categories and labels`;
-	modifyCounts.innerHTML = [3, 4, 5].map((count) => `
-		<button class="tb ${count === modifyState.count ? 'act' : ''}" type="button" data-count="${count}">${count} categories</button>
-	`).join('');
-	modifyCounts.querySelectorAll('button').forEach((button) => {
-		button.onclick = () => {
-			modifyState.count = Number(button.dataset.count);
-			openModifyPanel(card.id);
-		};
-	});
+	modifyPanelTitle.textContent = `Set ${card.name} categories, labels, and percentage limits`;
+	if (modifySaveBtn) {
+		modifySaveBtn.style.background = card.accent;
+		modifySaveBtn.style.color = '#fff';
+	}
 
-	ensureCategorySlots(card, 5);
-	modifyFields.innerHTML = card.cats.slice(0, 5).map((cat, index) => {
+	ensureCategorySlots(card, modifyState.count);
+	modifyFields.innerHTML = card.cats.slice(0, modifyState.count).map((cat, index) => {
 		const isVisible = index < modifyState.count;
+		const canRemove = modifyState.count > MIN_CATEGORY_COUNT;
+		const canAdd = modifyState.count < MAX_CATEGORY_COUNT;
+		const pctValue = getCategoryPercent(card, cat);
+		const budgetValue = getCategoryBudget(card, pctValue);
 		return `
-			<div class="modify-field" style="display:${isVisible ? 'grid' : 'none'};">
-				<label for="modify-${card.id}-${index}">Category ${index + 1}</label>
-				<input class="gi" id="modify-${card.id}-${index}" type="text" value="${escapeHTML(getCategoryLabel(cat))}" placeholder="Category name" />
+			<div class="modify-field" data-category-row style="display:${isVisible ? 'grid' : 'none'};">
+				<div class="modify-field-head" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+					<label for="modify-${card.id}-${index}">Category ${index + 1}</label>
+					<div style="display:flex;gap:6px;align-items:center;">
+						<button class="tb modify-add" type="button" data-add-category data-index="${index}" ${canAdd ? '' : 'disabled'}>+</button>
+						<button class="tb modify-delete" type="button" data-remove-category data-index="${index}" ${canRemove ? '' : 'disabled'}>-</button>
+					</div>
+				</div>
+				<div class="modify-field-grid">
+					<input class="gi" id="modify-${card.id}-${index}" type="text" value="${escapeHTML(getCategoryLabel(cat))}" placeholder="Category name" />
+					<div style="display:flex;align-items:center;gap:6px;">
+						<input class="gi" data-pct-input id="modify-pct-${card.id}-${index}" type="number" min="0" max="100" step="1" inputmode="numeric" value="${pctValue}" placeholder="% of limit" />
+						<span class="pct-suffix" aria-hidden="true" style="font-weight:600;color:var(--color-text-secondary);">%</span>
+					</div>
+				</div>
+				<div class="modify-budget-preview" data-budget-preview>${pctValue}% = ${formatMoney(budgetValue)}/mo</div>
 			</div>
 		`;
 	}).join('');
+	modifyFields.querySelectorAll('[data-pct-input]').forEach((input) => {
+		input.addEventListener('input', () => clampModifyCategoryPercent(input));
+	});
+	modifyFields.querySelectorAll('[data-remove-category]').forEach((button) => {
+		button.addEventListener('click', () => {
+			removeModifyCategory(Number(button.dataset.index));
+		});
+	});
+	modifyFields.querySelectorAll('[data-add-category]').forEach((button) => {
+		button.addEventListener('click', () => {
+			addModifyCategory(Number(button.dataset.index));
+		});
+	});
+	updateModifyPreview();
 }
 
 function saveModifyPanel() {
@@ -1481,19 +1999,43 @@ function saveModifyPanel() {
 		return;
 	}
 
-	ensureCategorySlots(card, 5);
+	const totalPct = Array.from(modifyFields.querySelectorAll('[data-category-row]'))
+		.slice(0, modifyState.count)
+		.reduce((sum, row) => {
+			const pctInput = row.querySelector('[data-pct-input]');
+			return sum + clampPercent(pctInput?.value);
+		}, 0);
+
+	if (Math.round(totalPct) !== 100) {
+		updateModifyPreview();
+		return;
+	}
+
+	ensureCategorySlots(card, MAX_CATEGORY_COUNT);
 	card.categoryCount = modifyState.count;
 	for (let index = 0; index < modifyState.count; index += 1) {
 		const input = document.getElementById(`modify-${card.id}-${index}`);
+		const pctInput = document.getElementById(`modify-pct-${card.id}-${index}`);
 		const nextLabel = String(input?.value ?? '').trim();
+		const nextPct = clampPercent(pctInput?.value);
 		if (nextLabel) {
 			card.cats[index].label = nextLabel;
 		}
+		card.cats[index].pct = nextPct;
 	}
+	card.cats.slice(modifyState.count).forEach((cat) => {
+		cat.pct = 0;
+		cat.lim = 0;
+	});
+	syncCategoryBudgets(card);
 
 	persistCategoryLayout();
 	renderPanels();
 	show(activeTabIndex);
+	const saveCard = CARDS.find((c) => c.id === modifyState.cardId);
+	if (modifySaveBtn && saveCard) {
+		launchConfettiAt(modifySaveBtn, 30, getThemeConfettiColors(saveCard));
+	}
 	closeModifyPanel();
 }
 
@@ -1572,7 +2114,7 @@ function renderStarterStreakBar(c, cc, cpct) {
 	const cardOverLimit = Number(c.used) > Number(c.limit);
 	const streakBroken = categoryOverLimit || cardOverLimit;
 	const overLimit = cardOverLimit || categoryOverLimit;
-	const safePct = streakBroken ? 0 : Math.max(0, Math.min(100, Math.round(((maxTarget - pct) / maxTarget) * 100)));
+	const safePct = streakBroken ? 0 : Math.max(0, Math.min(100, Math.round((pct / maxTarget) * 100)));
 	const goalText = streakBroken ? (overLimit ? 'Streak broken - over limit' : 'Streak broken') : 'Streak active';
 	const chipLabel = streakBroken ? '💔 Credit Streak' : '🔥 Credit Streak';
 
@@ -1614,23 +2156,26 @@ function renderPanel(c) {
 	const cats = visibleCats.map((cat) => {
 		const cp = Math.round(cat.spent / cat.lim * 100);
 		const over = cp > 100;
-		const bc = over ? '#E24B4A' : cp > 85 ? '#BA7517' : c.accent;
+		const bc = over ? '#E24B4A' : (c.id === 'starter' && cp > 70 ? c.accent : cp > 85 ? '#BA7517' : c.accent);
 		const amt = c.isPoints ? `${cat.spent.toLocaleString()} pts` : `$${cat.spent}`;
 		const lmt = c.isPoints ? `${cat.lim.toLocaleString()} pts` : `$${cat.lim}`;
+		const pct = getCategoryPercent(c, cat);
 		const inputId = `ci-${c.id}-${cat.ab}`;
 		const categoryPoints = (c.loopPointsMap && c.loopPointsMap[cat.nm]) || 0;
 		const rewardLabel = c.isPoints ? 'Points earned' : 'Rewards earned';
 		const labelValue = getCategoryLabel(cat);
-		const categoryIcon = getCategoryIcon(cat.nm);
+		const categoryIcon = getCategoryIcon(labelValue);
+		const isStarterNearLimit = c.id === 'starter' && cp > 70;
+		const bgColor = cp > 70 ? 'rgba(255, 213, 74, 0.22)' : c.catBg;
 		const categoryActions = `<div class="grocery-inline">
 				<div class="gctrl">
 					<input class="gi" id="${inputId}" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Amount ($)" />
-					<button class="gb${cp > 70 ? ' warning' : ''}" onclick="logCategorySpend('${c.id}', '${cat.nm}', '${inputId}')" style="background:${cp > 70 ? '#FFD54A' : c.accent}; color:${cp > 70 ? '#2b2b00' : '#fff'}">Add</button>
+					<button class="gb${cp > 70 && !isStarterNearLimit ? ' warning' : ''}" onclick="logCategorySpend('${c.id}', '${cat.nm}', '${inputId}')" style="background:${isStarterNearLimit ? c.accent : cp > 70 ? '#FFD54A' : c.accent}; color:${cp > 70 && !isStarterNearLimit ? '#2b2b00' : '#fff'}">Add</button>
 				</div>
 				<div class="gp" style="color:${c.tS};">${rewardLabel}: <strong style="color:${c.tP};">${categoryPoints}</strong></div>
 			</div>`;
 
-		return `<div class="ck" data-cat="${cat.ab}" ${cp >= 75 ? 'data-near-limit' : ''} style="background:${c.catBg};border:0.5px solid ${c.brd};">
+		return `<div class="ck" data-cat="${cat.ab}" ${cp > 70 ? 'data-near-limit' : ''} style="background:${bgColor};border:0.5px solid ${c.brd};">
 			<div class="ci">
 				<div class="cx" style="background:${bc}25;color:${bc};">${cat.ab}</div>
 				${over
@@ -1641,9 +2186,8 @@ function renderPanel(c) {
 			<div class="cat-icon">${categoryIcon}</div>
 			${renderCategoryName(labelValue, c.tS)}
 			<div class="ca" style="color:${c.tP};">${amt}</div>
-			<div class="cf" style="color:${c.tT};">of ${lmt}</div>
 			<div class="mb" style="background:${c.brdFill};"><div class="mf" style="width:${Math.min(100, cp)}%;background:${bc};"></div></div>
-			<div class="cpct" style="color:${c.tT};">${cp}%</div>
+			<div class="cpct" style="color:${c.tT};">${cp}% of budget used</div>
 			${categoryActions}
 		</div>`;
 	}).join('');
@@ -1666,14 +2210,6 @@ function renderPanel(c) {
 			}
 			${c.id === 'starter' ? '' : `<div class="bdg" style="background:${s.bg};color:${s.txt};">${s.lbl}</div>`}
 			${c.id === 'starter' ? '' : `<p class="tt" style="color:${c.tT};">${s.tip}</p>`}
-			<div class="limit-box" style="background:${c.cycleBg};border:0.5px solid ${c.brd};">
-				<div class="sl" style="color:${c.tT};margin-bottom:8px;">Set your credit limit</div>
-				${c.limitRange ? `<div style="font-size:11px;color:${c.tS};margin-bottom:8px;">Typical range: ${c.limitRange}</div>` : ''}
-				<div class="gctrl">
-					<input class="gi" id="${limitInputId}" type="number" min="1" step="1" inputmode="numeric" placeholder="Credit limit ($)" value="${c.limit}" />
-					<button class="gb" onclick="updateCreditLimit('${c.id}', '${limitInputId}')" style="background:${c.accent};">Update limit</button>
-				</div>
-			</div>
 		</div>
 		${c.id === 'starter' && c.note
 			? renderStarterStreakBar(c, cc, cpct)
@@ -1700,14 +2236,111 @@ function renderPanel(c) {
 
 const tabsEl = document.getElementById('tabs');
 const panelsEl = document.getElementById('panels');
+const limitDropdown = document.getElementById('limitDropdown');
+const signOutBtn = document.getElementById('signOutBtn');
 let activeTabIndex = 0;
+
+auth.onAuthStateChanged((user) => {
+	if (!user) {
+		window.location.replace('login.html');
+	}
+});
+
+if (signOutBtn) {
+	signOutBtn.onclick = async () => {
+		try {
+			await auth.signOut();
+			window.location.replace('login.html');
+		} catch (error) {
+			console.error('Sign-out failed', error);
+			alert(error.message || 'Sign-out failed');
+		}
+	};
+}
 
 function renderPanels() {
 	panelsEl.innerHTML = CARDS.map((c) => renderPanel(c)).join('');
 }
 
-if (modifyCategoriesBtn) {
-	modifyCategoriesBtn.onclick = () => openModifyPanel(CARDS[activeTabIndex]?.id);
+function getAllowedLimits(card) {
+	if (Array.isArray(card?.allowedLimits) && card.allowedLimits.length > 0) {
+		return [...new Set(card.allowedLimits.map((limit) => Math.round(Number(limit) || 0)).filter((limit) => limit > 0))].sort((a, b) => a - b);
+	}
+
+	return [500, 800, 1000, 1500, 2000];
+}
+
+function normalizeAllowedLimit(card, value) {
+	const allowedLimits = getAllowedLimits(card);
+	const numericValue = Math.round(Number(value) || 0);
+	if (allowedLimits.includes(numericValue)) {
+		return numericValue;
+	}
+
+	let closest = allowedLimits[0];
+	let closestDistance = Math.abs(closest - numericValue);
+	for (const limit of allowedLimits) {
+		const distance = Math.abs(limit - numericValue);
+		if (distance < closestDistance) {
+			closest = limit;
+			closestDistance = distance;
+		}
+	}
+	return closest;
+}
+
+function renderLimitDropdown(card) {
+	if (!limitDropdown || !card) {
+		return;
+	}
+
+	const limitInputId = `limit-${card.id}`;
+	limitDropdown.innerHTML = `
+		<summary class="limit-toggle" style="background:${card.accent};color:#fff;border-color:transparent;">
+			<div style="text-align:left;">
+				<strong>Credit limit: ${formatMoney(card.limit)}</strong>
+				${card.limitRange ? `<small style="color:rgba(255,255,255,.82);">Typical range: ${card.limitRange}</small>` : ''}
+			</div>
+			<span class="limit-chevron" aria-hidden="true">▾</span>
+		</summary>
+		<div class="limit-menu" style="border-color:${card.brd};background:${card.cycleBg};">
+			<div class="limit-presets" role="listbox" aria-label="Credit limit presets">
+				${getAllowedLimits(card).map((preset) => `
+					<button class="tb limit-preset ${Number(card.limit) === preset ? 'act' : ''}" type="button" data-limit-preset="${preset}" style="background:${Number(card.limit) === preset ? card.accent : 'var(--color-background-primary)'};color:${Number(card.limit) === preset ? '#fff' : 'var(--color-text-primary)'};border-color:${card.brd};">${formatMoney(preset)}</button>
+				`).join('')}
+			</div>
+			<div class="gctrl">
+				<input class="gi" id="${limitInputId}" type="number" min="1" step="1" inputmode="numeric" placeholder="Enter custom limit" value="${card.limit}" />
+				<div class="limit-actions">
+					<button class="gb" type="button" data-update-limit="${card.id}" data-limit-input="${limitInputId}" style="background:${card.accent};">Update limit</button>
+				</div>
+			</div>
+		</div>
+	`;
+
+	const updateButton = limitDropdown.querySelector('[data-update-limit]');
+	if (updateButton) {
+		updateButton.onclick = () => {
+			const inputId = updateButton.getAttribute('data-limit-input');
+			updateCreditLimit(card.id, inputId, updateButton);
+		};
+	}
+
+	limitDropdown.querySelectorAll('[data-limit-preset]').forEach((button) => {
+		button.onclick = () => {
+			setLimitPreset(card.id, button.getAttribute('data-limit-preset'));
+		};
+	});
+}
+
+if (modifyPanel) {
+	modifyPanel.addEventListener('toggle', () => {
+		if (modifyPanel.open) {
+			openModifyPanel(CARDS[activeTabIndex]?.id);
+		} else {
+			// panel closed
+		}
+	});
 }
 
 if (modifyPanelClose) {
@@ -1742,11 +2375,12 @@ function show(idx) {
 		t.style.color = on ? '#fff' : 'var(--color-text-secondary)';
 		t.style.borderColor = on ? 'transparent' : 'var(--color-border-secondary)';
 	});
+	renderLimitDropdown(CARDS[idx]);
 
-	if (modifyCategoriesBtn) {
-		modifyCategoriesBtn.style.background = CARDS[idx]?.accent || '#8B8A84';
-		modifyCategoriesBtn.style.color = '#fff';
-		modifyCategoriesBtn.style.borderColor = 'transparent';
+	if (modifyPanelSummary) {
+		modifyPanelSummary.style.background = CARDS[idx]?.accent || '#8B8A84';
+		modifyPanelSummary.style.color = '#fff';
+		modifyPanelSummary.style.borderColor = 'transparent';
 	}
 }
 
@@ -1871,7 +2505,7 @@ function updateTravelBooking(cardId, inputId) {
 	show(activeTabIndex);
 }
 
-function updateCreditLimit(cardId, inputId) {
+function updateCreditLimit(cardId, inputId, buttonEl) {
 	const card = CARDS.find((c) => c.id === cardId);
 	if (!card) {
 		return;
@@ -1887,23 +2521,24 @@ function updateCreditLimit(cardId, inputId) {
 		return;
 	}
 
-	const previousLimit = Math.max(1, Number(card.limit) || 1);
 	card.limit = Math.round(enteredLimit);
-	if (card.id === 'starter') {
-		applyStarterCategoryLimits(card);
-	} else {
-		const ratio = card.limit / previousLimit;
-		let assigned = 0;
-		card.cats.forEach((cat, idx) => {
-			if (idx === card.cats.length - 1) {
-				cat.lim = Math.max(0, Math.round(card.limit - assigned));
-				return;
-			}
-			const nextLimit = Math.max(1, Math.round(cat.lim * ratio));
-			cat.lim = nextLimit;
-			assigned += nextLimit;
-		});
+	syncCategoryBudgets(card);
+	launchConfettiAt(buttonEl, 24, getThemeConfettiColors(card));
+	renderPanels();
+	if (limitDropdown) {
+		limitDropdown.open = false;
 	}
+	show(activeTabIndex);
+}
+
+function setLimitPreset(cardId, limit) {
+	const card = CARDS.find((c) => c.id === cardId);
+	if (!card) {
+		return;
+	}
+
+	card.limit = normalizeAllowedLimit(card, limit);
+	syncCategoryBudgets(card);
 	renderPanels();
 	show(activeTabIndex);
 }

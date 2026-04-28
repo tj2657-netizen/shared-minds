@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Credit Journey Login</title>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth-compat.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --font-sans: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
+      --bg-1: #f6f9ea;
+      --bg-2: #eef7ff;
+      --panel: rgba(255,255,255,0.82);
+      --text: #1a1a18;
+      --muted: #5f5e5a;
+      --border: rgba(0,0,0,0.12);
+      --shadow: 0 16px 40px rgba(0,0,0,0.12);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-1: #1e1e1c;
+        --bg-2: #262a33;
+        --panel: rgba(30,30,28,0.82);
+        --text: #f0ede8;
+        --muted: #a8a59e;
+        --border: rgba(255,255,255,0.12);
+        --shadow: 0 16px 40px rgba(0,0,0,0.38);
+      }
+    }
+
+    body {
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(120% 80% at 0% 0%, var(--bg-1) 0%, transparent 45%),
+        radial-gradient(100% 70% at 100% 20%, var(--bg-2) 0%, transparent 42%),
+        linear-gradient(180deg, #ffffff 0%, #f8f7f3 100%);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .shell {
+      width: min(100%, 420px);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: var(--panel);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 30px;
+      line-height: 1.08;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 22px;
+      font-size: 14px;
+    }
+
+    .auth-box {
+      display: grid;
+      gap: 12px;
+    }
+
+    .google-btn {
+      width: 100%;
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 16px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #1a1a18;
+      color: #fff;
+      box-shadow: 0 8px 0 rgba(0,0,0,0.14);
+      transition: transform .12s ease, box-shadow .12s ease, filter .15s ease;
+    }
+
+    .google-btn:hover { filter: brightness(1.05); }
+    .google-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 5px 0 rgba(0,0,0,0.14);
+    }
+
+    .status {
+      min-height: 20px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="eyebrow">Credit Journey</div>
+    <h1>Sign in to continue</h1>
+    <p>Use your Google account to open your dashboard and save your credit journey data.</p>
+    <div class="auth-box">
+      <button class="google-btn" id="googleSignInBtn" type="button">Continue with Google</button>
+      <div class="status" id="statusText">Waiting for sign in.</div>
+    </div>
+  </main>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDRwFX_x7oOHDRIPReV3aP5XMZSwbyM2EM",
+      authDomain: "shared-minds-projects.firebaseapp.com",
+      projectId: "shared-minds-projects",
+      storageBucket: "shared-minds-projects.firebasestorage.app",
+      messagingSenderId: "184678682137",
+      appId: "1:184678682137:web:8c68cb762f3032586a2488",
+      measurementId: "G-PGB199FS50"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+    googleProvider.setCustomParameters({ prompt: 'select_account' });
+
+    const signInBtn = document.getElementById('googleSignInBtn');
+    const statusText = document.getElementById('statusText');
+
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        window.location.replace('index.html');
+      }
+    });
+
+    signInBtn.onclick = async () => {
+      statusText.textContent = 'Opening Google sign in...';
+      try {
+        await auth.signInWithPopup(googleProvider);
+        window.location.replace('index.html');
+      } catch (error) {
+        console.error('Google sign-in failed', error);
+        statusText.textContent = error.message || 'Google sign-in failed.';
+      }
+    };
+  </script>
+</body>
+</html>
