@@ -244,6 +244,14 @@ body {
 
 .gb:hover { filter: brightness(1.05); }
 
+/* Warning state for category action buttons when utilization > 70% */
+.gb.warning {
+  background: #FFD54A;
+  color: #2b2b00;
+  box-shadow: 0 6px 18px rgba(255, 197, 66, 0.18);
+}
+.gb.warning:hover { filter: brightness(1.03); }
+
 .gp { font-size: 12px; margin-top: 8px; }
 .ib {
   width: 100%; padding: 9px; background: transparent;
@@ -258,6 +266,28 @@ body {
 .it { font-size: 12px; font-weight: 500; margin-bottom: 3px; }
 .iy { font-size: 11px; line-height: 1.55; }
 .lm { text-align: center; padding: .75rem; font-size: 12px; }
+/* Streak chip glow (intensifies with streak length) */
+.streak-chip {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.06);
+  font-weight: 700;
+  transition: box-shadow .25s ease, transform .25s ease, background .25s ease, color .25s ease;
+  --glow: 0;
+}
+.streak-chip:not(.broken) {
+  box-shadow: 0 0 calc(var(--glow) * 12px) rgba(46,125,50,0.35), 0 4px 10px rgba(0,0,0,0.06);
+  transform: translateY(calc(-2px * var(--glow)));
+  background: linear-gradient(90deg, rgba(46,125,50,0.06), rgba(16,185,129,0.02));
+  color: #145C33;
+}
+.streak-chip.broken {
+  box-shadow: none;
+  background: #f2f2f2;
+  color: #8a8a8a;
+}
 
 .travel-insights {
   display: grid;
@@ -315,6 +345,34 @@ body {
 .ti-tip {
   border-color: #cfc8f7;
   background: #f4f1ff;
+}
+
+/* ====== Dynamic Category Card Feedback ====== */
+@keyframes vibrate {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+@keyframes red-glow {
+  0%, 100% { 
+    box-shadow: 0 0 0 0px rgba(226, 75, 74, 0.4),
+                0 0 4px 0px rgba(226, 75, 74, 0.2);
+    border-color: rgba(226, 75, 74, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 0 3px rgba(226, 75, 74, 0.2),
+                0 0 12px 2px rgba(226, 75, 74, 0.35);
+    border-color: rgba(226, 75, 74, 0.5);
+  }
+}
+
+.ck[data-near-limit] {
+  animation: vibrate 0.5s ease-in-out infinite, 
+             red-glow 2s ease-in-out infinite;
+  background: rgba(226, 75, 74, 0.06) !important;
+  position: relative;
+  overflow: visible;
 }
 
 @media (min-width: 720px) {

@@ -136,7 +136,7 @@ function mkStatus(pct) {
 		return { bg: '#FAEEDA', txt: '#854F0B', dot: '#BA7517', lbl: 'Very low - may seem inactive', tip: 'Aim for 1-5% to signal responsible activity to bureaus.' };
 	}
 	if (pct <= 30) {
-		return { bg: '#EAF3DE', txt: '#3B6D11', dot: '#639922', lbl: 'Excellent range', tip: 'Under 30% is the sweet spot. Your score thanks you.' };
+		return { bg: '#EAF3DE', txt: '#3B6D11', dot: '#639922', lbl: 'Excellent range', tip: 'Perfect utilization — you\'re building excellent credit.' };
 	}
 	if (pct <= 50) {
 		return { bg: '#FAEEDA', txt: '#854F0B', dot: '#BA7517', lbl: 'Moderate - try to reduce', tip: 'Pay down before your statement closes to lower reported utilization.' };
@@ -410,7 +410,7 @@ function renderPanel(c) {
 		const categoryActions = `<div class="grocery-inline">
 				<div class="gctrl">
 					<input class="gi" id="${inputId}" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Amount ($)" />
-					<button class="gb" onclick="logCategorySpend('${c.id}', '${cat.nm}', '${inputId}')" style="background:${c.accent};">Add</button>
+					<button class="gb${cp > 70 ? ' warning' : ''}" onclick="logCategorySpend('${c.id}', '${cat.nm}', '${inputId}')" style="background:${cp > 70 ? '#FFD54A' : c.accent}; color:${cp > 70 ? '#2b2b00' : '#fff'}">Add</button>
 				</div>
 				<div class="gp" style="color:${c.tS};">${rewardLabel}: <strong style="color:${c.tP};">${categoryPoints}</strong></div>
 			</div>`;
@@ -447,10 +447,7 @@ function renderPanel(c) {
 			<div class="sl" style="color:${c.tT};">${c.sub}</div>
 			<div style="font-size:13px;font-weight:500;color:${c.tP};margin-bottom:10px;">${c.full}</div>
 			<div class="rw">${mkRing(pct, rc, c.track)}<div class="rc"><div class="rp" style="color:${rc};">${pct}%</div><div class="rm" style="color:${c.tS};">utilization</div></div></div>
-			<div class="bdg" style="background:${s.bg};color:${s.txt};">
-				<svg width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3" fill="${s.dot}"/></svg>
-				${s.lbl}
-			</div>
+			<div class="bdg" style="background:${s.bg};color:${s.txt};">${s.lbl}</div>
 			<p class="tt" style="color:${c.tT};">${s.tip}</p>
 			<div class="limit-box" style="background:${c.cycleBg};border:0.5px solid ${c.brd};">
 				<div class="sl" style="color:${c.tT};margin-bottom:8px;">Set your credit limit</div>

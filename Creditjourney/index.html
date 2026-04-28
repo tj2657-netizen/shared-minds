@@ -8,7 +8,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	--font-sans: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
   --color-background-primary: #ffffff;
   --color-background-secondary: #f5f5f3;
   --color-text-primary: #1a1a18;
@@ -16,8 +16,12 @@
   --color-text-tertiary: #888780;
   --color-border-tertiary: rgba(0,0,0,0.12);
   --color-border-secondary: rgba(0,0,0,0.22);
-  --border-radius-md: 8px;
-  --border-radius-lg: 12px;
+	--border-radius-md: 14px;
+	--border-radius-lg: 24px;
+	--shadow-flat-card: 0 4px 0 rgba(0,0,0,0.08);
+	--shadow-flat-btn: 0 6px 0 rgba(0,0,0,0.15);
+	--shadow-flat-btn-press: 0 3px 0 rgba(0,0,0,0.15);
+	--shadow-flat-track: 0 2px 0 rgba(0,0,0,0.10);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -34,11 +38,15 @@
 
 body {
   font-family: var(--font-sans);
-  background: var(--color-background-primary);
+	background:
+		radial-gradient(120% 80% at 0% 0%, #f6f9ea 0%, transparent 45%),
+		radial-gradient(100% 70% at 100% 20%, #eef7ff 0%, transparent 42%),
+		var(--color-background-primary);
   color: var(--color-text-primary);
   padding: 1.5rem;
   max-width: 520px;
   margin: 0 auto;
+	min-height: 100vh;
 }
 
 .top-actions {
@@ -50,9 +58,10 @@ body {
 .modify-panel {
   border: 0.5px solid var(--color-border-tertiary);
   border-radius: var(--border-radius-lg);
-  background: var(--color-background-secondary);
+	background: #fbfbf8;
   padding: 1rem;
   margin-bottom: 1rem;
+	box-shadow: var(--shadow-flat-card);
 }
 
 .modify-panel-head {
@@ -71,13 +80,20 @@ body {
 
 .modify-panel-close {
   border: 0.5px solid var(--color-border-secondary);
-  background: transparent;
+	background: #fff;
   color: var(--color-text-secondary);
-  border-radius: 18px;
-  padding: 5px 10px;
+	border-radius: 24px;
+	padding: 7px 12px;
   font-size: 12px;
   font-family: inherit;
   cursor: pointer;
+	box-shadow: var(--shadow-flat-btn);
+	transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.modify-panel-close:active {
+	transform: translateY(3px);
+	box-shadow: var(--shadow-flat-btn-press);
 }
 
 .modify-counts {
@@ -125,6 +141,19 @@ body {
   padding: 7px 12px;
 }
 
+.modify-secondary,
+.modify-save,
+.modify-btn {
+	box-shadow: var(--shadow-flat-btn);
+}
+
+.modify-btn:active,
+.modify-secondary:active,
+.modify-save:active {
+	transform: translateY(3px);
+	box-shadow: var(--shadow-flat-btn-press);
+}
+
 .modify-save {
   background: var(--color-text-primary);
   color: var(--color-background-primary);
@@ -143,18 +172,24 @@ body {
 
 .tb {
   flex: 0 0 auto;
-  padding: 5px 12px;
-  border-radius: 20px;
+	padding: 8px 14px;
+	border-radius: 26px;
   font-size: 12px;
   cursor: pointer;
   border: 0.5px solid var(--color-border-secondary);
-  background: var(--color-background-secondary);
+	background: #fff;
   color: var(--color-text-secondary);
   font-family: inherit;
-  transition: background .15s, color .15s;
+	box-shadow: var(--shadow-flat-btn);
+	transition: background .15s, color .15s, transform .12s ease, box-shadow .12s ease;
 }
 
-.tb:hover:not(.act) { background: var(--color-background-secondary); }
+.tb:hover:not(.act) { background: #f8f8f4; }
+
+.tb:active {
+	transform: translateY(3px);
+	box-shadow: var(--shadow-flat-btn-press);
+}
 
 .modify-btn {
   background: #8B8A84;
@@ -163,7 +198,9 @@ body {
   width: auto;
   padding-left: 14px;
   padding-right: 14px;
-  transition: background .15s, color .15s, border-color .15s;
+	border-radius: 26px;
+	box-shadow: var(--shadow-flat-btn);
+	transition: background .15s, color .15s, border-color .15s, transform .12s ease, box-shadow .12s ease;
 }
 
 .pnl { display: none; }
@@ -184,9 +221,10 @@ body {
   border-radius: var(--border-radius-lg);
   padding: 12px;
   text-align: left;
+	box-shadow: var(--shadow-flat-card);
 }
-.cc { border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
-.lp { border-radius: var(--border-radius-lg); padding: 12px; margin-bottom: 1.25rem; }
+.cc { border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.25rem; box-shadow: var(--shadow-flat-card); }
+.lp { border-radius: var(--border-radius-lg); padding: 12px; margin-bottom: 1.25rem; box-shadow: var(--shadow-flat-card); }
 .grocery-inline { margin-top: 8px; }
 .gctrl {
   display: flex;
@@ -215,13 +253,13 @@ body {
 .ct { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
 .cd { font-size: 19px; font-weight: 500; }
 .cs { font-size: 11px; margin-top: 2px; }
-.bt { height: 5px; border-radius: 3px; overflow: hidden; }
-.bf { height: 100%; border-radius: 3px; }
+.bt { height: 9px; border-radius: 999px; overflow: hidden; box-shadow: var(--shadow-flat-track); }
+.bf { height: 100%; border-radius: 999px; }
 .cg { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 8px; margin-bottom: 1.25rem; }
-.ck { border-radius: var(--border-radius-lg); padding: 10px 12px; }
+.ck { border-radius: var(--border-radius-lg); padding: 12px 12px; box-shadow: var(--shadow-flat-card); }
 .ci { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
 .cx { width: 28px; height: 28px; border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
-.ctag { font-size: 11px; padding: 2px 6px; border-radius: 4px; }
+.ctag { font-size: 11px; padding: 3px 8px; border-radius: 999px; }
 .cn { margin-bottom: 2px; }
 .cn-single {
   font-size: 13px;
@@ -231,32 +269,297 @@ body {
 .cn-stacked { line-height: 1.1; }
 .cn-main { font-size: 13px; font-weight: 700; }
 .cn-sub { font-size: 10px; font-weight: 500; opacity: 0.82; margin-top: 2px; }
+
+.cat-icon {
+	font-size: 56px;
+	line-height: 1;
+	margin-bottom: 8px;
+	text-align: center;
+}
+
+.cat-icon.pop {
+	animation: icon-pop 700ms cubic-bezier(.2,.9,.2,1) forwards;
+}
+
+@keyframes icon-pop {
+	0% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+	30% { transform: translateY(-8px) scale(1.22); filter: drop-shadow(0 6px 8px rgba(0,0,0,0.12)); }
+	60% { transform: translateY(-4px) scale(1.06); }
+	100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+}
+
+.hm-center-cat {
+  animation: cat-bounce 4.2s ease-in-out infinite, cat-breathe 6s ease-in-out infinite;
+}
+
+@keyframes cat-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes cat-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes tail-wag {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(12deg); }
+  75% { transform: rotate(-12deg); }
+}
+
+.cat-tail {
+  animation: tail-wag 1.8s ease-in-out infinite;
+  transform-origin: 48px 20px;
+}
+
+@keyframes card-shake {
+	0% { transform: translateX(0); }
+	15% { transform: translateX(-8px) rotate(-1deg); }
+	30% { transform: translateX(6px) rotate(1deg); }
+	45% { transform: translateX(-4px) rotate(-0.6deg); }
+	60% { transform: translateX(2px) rotate(0.4deg); }
+	75% { transform: translateX(-1px) rotate(-0.2deg); }
+	100% { transform: translateX(0); }
+}
+
+.cat-popup {
+	position: absolute;
+	left: 50%;
+	top: 8px;
+	transform: translateX(-50%) scale(.88);
+	background: rgba(0,0,0,0.85);
+	color: #fff;
+	padding: 8px 12px;
+	border-radius: 12px;
+	font-weight: 700;
+	pointer-events: none;
+	z-index: 60;
+	opacity: 0;
+	animation: pop-in 900ms cubic-bezier(.2,.9,.2,1) forwards;
+}
+
+@keyframes pop-in {
+	0% { transform: translateX(-50%) scale(.6); opacity: 0; }
+	60% { transform: translateX(-50%) scale(1.06); opacity: 1; }
+	100% { transform: translateX(-50%) scale(1); opacity: 0; }
+}
+
+.confetti-canvas {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	pointer-events: none;
+	z-index: 50;
+}
 .ca { font-size: 15px; font-weight: 500; }
 .cf { font-size: 11px; margin-bottom: 5px; }
-.mb { height: 3px; border-radius: 2px; overflow: hidden; margin-bottom: 3px; }
-.mf { height: 100%; border-radius: 2px; }
+.mb { height: 9px; border-radius: 999px; overflow: hidden; margin-bottom: 5px; box-shadow: var(--shadow-flat-track); }
+.mf { height: 100%; border-radius: 999px; }
 .cpct { font-size: 11px; text-align: right; }
-.sn { font-size: 11px; padding: 7px 10px; border-radius: var(--border-radius-md); margin-bottom: 1.25rem; }
+.sn { font-size: 11px; padding: 9px 12px; border-radius: var(--border-radius-lg); margin-bottom: 1.25rem; box-shadow: var(--shadow-flat-card); }
+
+.streak-sn {
+	margin-bottom: 1.25rem;
+	border-radius: var(--border-radius-lg);
+	border: 0.5px solid #ffba87;
+	background: linear-gradient(180deg, #fff4e8 0%, #ffe6cf 100%);
+	padding: 10px 12px;
+	box-shadow: var(--shadow-flat-card);
+}
+
+.streak-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+
+.streak-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	border-radius: 999px;
+	background: #ff8b2f;
+	color: #fff;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .02em;
+	padding: 5px 9px;
+	box-shadow: 0 3px 0 rgba(170, 78, 14, 0.35);
+}
+
+.streak-fire {
+	display: inline-block;
+	font-size: 12px;
+	line-height: 1;
+	transform-origin: center bottom;
+	transition: transform .22s ease, opacity .22s ease;
+}
+
+.streak-fire.move {
+	animation: streak-fire-drift .55s ease-out;
+}
+
+.streak-chip.broken {
+	background: #e45555;
+	box-shadow: 0 3px 0 rgba(126, 31, 31, 0.35);
+}
+
+.streak-goal {
+	font-size: 11px;
+	font-weight: 700;
+	color: #aa4e0e;
+}
+
+.streak-goal.broken {
+	color: #982626;
+}
+
+.streak-track {
+	height: 10px;
+	border-radius: 999px;
+	overflow: hidden;
+	background: rgba(170, 78, 14, 0.16);
+	box-shadow: 0 2px 0 rgba(170, 78, 14, 0.18);
+	margin-bottom: 7px;
+}
+
+.streak-fill {
+	height: 100%;
+	border-radius: 999px;
+	background: linear-gradient(90deg, #ff7f22 0%, #ffb13c 100%);
+}
+
+.streak-fill.broken {
+	background: linear-gradient(90deg, #ea6a6a 0%, #e45555 100%);
+}
+
+.streak-note {
+	font-size: 11px;
+	color: #33407f;
+	line-height: 1.45;
+	position: relative;
+	margin: 4px 0 10px;
+	display: inline-block;
+	max-width: 248px;
+	background: #ffffff;
+	border: 4px solid #3f4ea3;
+	border-radius: 42% 42% 46% 46% / 54% 54% 42% 42%;
+	padding: 8px 14px;
+	box-shadow: 0 5px 0 rgba(63, 78, 163, 0.2);
+	animation: bubble-bob 2.6s ease-in-out infinite, bubble-glow 2.6s ease-in-out infinite;
+	z-index: 1;
+}
+
+.streak-note::before {
+	content: none;
+}
+
+.streak-note::after {
+	content: none;
+}
+
+.streak-note strong {
+	color: #2a3570;
+}
+
+@keyframes bubble-bob {
+	0%, 100% { transform: translateY(0); }
+	50% { transform: translateY(-3px); }
+}
+
+@keyframes bubble-glow {
+	0%, 100% { box-shadow: 0 5px 0 rgba(63, 78, 163, 0.2); }
+	50% { box-shadow: 0 6px 0 rgba(63, 78, 163, 0.28); }
+}
+
+@keyframes bubble-float {
+	0%, 100% { transform: translateY(0) scale(1); opacity: .9; }
+	50% { transform: translateY(-2px) scale(1.04); opacity: 1; }
+}
+
+@keyframes streak-fire-drift {
+	0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+	35% { transform: translateY(-5px) scale(1.18) rotate(-10deg); opacity: 1; }
+	70% { transform: translateY(-2px) scale(1.08) rotate(8deg); opacity: .98; }
+	100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.streak-note,
+	.streak-note::before {
+		animation: none;
+	}
+}
+
+.streak-billing {
+	margin-bottom: 9px;
+	padding-bottom: 9px;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	gap: 12px;
+}
+
+.streak-renew {
+	font-size: 11px;
+	color: #9a5a2c;
+}
+
+.streak-cycle {
+	text-align: right;
+}
+
+.streak-cycle-label {
+	font-size: 11px;
+	color: #9a5a2c;
+}
+
+.streak-cycle-value {
+	font-size: 15px;
+	font-weight: 700;
+	color: #8f3a00;
+}
+
 .gb {
   border: 0;
   width: 100%;
   max-width: 100%;
   color: #fff;
-  padding: 8px 12px;
-  border-radius: var(--border-radius-md);
+	padding: 9px 14px;
+	border-radius: 28px;
   font-size: 12px;
   font-family: inherit;
   cursor: pointer;
+	box-shadow: var(--shadow-flat-btn);
+	transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
 }
 
-.gb:hover { filter: brightness(1.05); }
+.gb:hover { filter: brightness(1.02); }
+
+.gb:active {
+	transform: translateY(3px);
+	box-shadow: var(--shadow-flat-btn-press);
+}
 
 .gp { font-size: 12px; margin-top: 8px; }
 .ib {
   width: 100%; padding: 9px; background: transparent;
-  border-radius: var(--border-radius-lg); font-size: 13px;
+	border-radius: 28px; font-size: 13px;
   cursor: pointer; display: flex; align-items: center;
-  justify-content: center; gap: 7px; font-family: inherit;
+	justify-content: center; gap: 7px; font-family: inherit;
+	box-shadow: var(--shadow-flat-btn);
+	transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.ib:active {
+	transform: translateY(3px);
+	box-shadow: var(--shadow-flat-btn-press);
 }
 
 .ib:disabled { opacity: .4; cursor: default; }
@@ -274,8 +577,9 @@ body {
 .ti-card {
   border: 0.5px solid var(--color-border-tertiary);
   border-radius: var(--border-radius-lg);
-  background: var(--color-background-secondary);
-  padding: 10px;
+	background: #fbfbf8;
+	padding: 12px;
+	box-shadow: var(--shadow-flat-card);
 }
 
 .ti-title {
@@ -322,43 +626,6 @@ body {
 .ti-tip {
   border-color: #cfc8f7;
   background: #f4f1ff;
-}
-
-.pnl-starter .ck,
-.pnl-starter .cc,
-.pnl-starter .limit-box,
-.pnl-starter .sn,
-.pnl-starter .travel-insights,
-.pnl-starter .ti-card {
-	border-radius: 24px;
-	box-shadow: 0 4px 0 rgba(0,0,0,0.08);
-}
-
-.pnl-starter .gb,
-.pnl-starter .ib,
-.pnl-starter .modify-btn {
-	border-radius: 26px;
-	box-shadow: 0 6px 0 rgba(0,0,0,0.15);
-	transition: transform .12s ease, box-shadow .12s ease;
-}
-
-.pnl-starter .gb:active,
-.pnl-starter .ib:active,
-.pnl-starter .modify-btn:active {
-	transform: translateY(3px);
-	box-shadow: 0 3px 0 rgba(0,0,0,0.15);
-}
-
-.pnl-starter .mb,
-.pnl-starter .bt {
-	height: 8px;
-	border-radius: 999px;
-	box-shadow: 0 2px 0 rgba(0,0,0,0.10);
-}
-
-.pnl-starter .mf,
-.pnl-starter .bf {
-	border-radius: 999px;
 }
 
 .health-meter {
@@ -453,12 +720,15 @@ body {
 	width: auto;
 	height: auto;
 	background: transparent;
-	box-shadow: none;
-	border-radius: 0;
+	box-shadow: 0 10px 22px rgba(29,158,117,0.10), 0 4px 10px rgba(29,158,117,0.06);
+	filter: drop-shadow(0 10px 18px rgba(29,158,117,0.12));
+	border-radius: 50%;
+	padding: 6px;
 	transform: rotate(0deg) !important;
 	animation: none !important;
 	display: grid;
 	place-items: center;
+	transition: box-shadow .25s ease, filter .25s ease, transform .25s ease;
 }
 
 .hm-center-cat {
@@ -492,6 +762,8 @@ body {
 .mascot.happy { animation: mascotHappy .7s ease; }
 .mascot.neutral { animation: mascotNeutral .6s ease; }
 .mascot.worried { animation: mascotWorried .7s ease; }
+.mascot.sleep { opacity: 0.85; transform: translateY(2px) scale(0.98); }
+.mascot.perfect { animation: mascotHappy .9s ease-in-out infinite alternate; }
 
 .hm-message {
 	font-size: 12px;
@@ -579,7 +851,7 @@ const CARDS = [
 		brd: 'var(--color-border-tertiary)', brdFill: 'rgba(0,0,0,.07)',
 		limit: 800, used: 0, daysLeft: 30, cycleDays: 30, isPoints: false,
 		limitRange: '$500-$2,000',
-		note: 'Milestone: each on-time payment builds your credit history. Keep your spendings upto 30% to build maximum credit',
+		note: 'Pay on time. Keep usage under 30%.',
 		cats: [
 			{ nm: 'Essentials (Groceries & Basic Needs)', ab: 'GR', spent: 0, lim: 150, extra: '1% back' },
 			{ nm: 'Transport',  ab: 'TR', spent: 0,  lim: 80,  extra: '1% back' },
@@ -668,6 +940,25 @@ const TRAVEL_KEYWORDS = [
 	'hotel', 'marriott', 'hilton', 'hyatt', 'expedia', 'booking', 'amtrak'
 ];
 
+const CATEGORY_ICONS = {
+	'Essentials (Groceries & Basic Needs)': '🛒',
+	'Transport': '🚗',
+	'Daily Treats': '☕',
+	'Lifestyle': '🛍️',
+	'Bills & Utilities': '💡',
+	'Reward-Optimized Spending (Groceries, Dining, Drugstores)': '🍽️',
+	'Fixed Commitments (Rent, Utilities, Phone, Streaming)': '🏠',
+	'Mobility & Convenience (Uber/Lyft, Gas, Transit, Delivery)': '🚕',
+	'Lifestyle & Experience (Shopping, Entertainment, Travel)': '🎉',
+	'Travel': '✈️',
+	'Dining': '🍴',
+	'Hotels': '🏨',
+	'Other': '📌',
+	'Office': '🏢',
+	'Ads & Mktg': '📢',
+	'Software': '💻',
+};
+
 function applyStarterCategoryLimits(card) {
 	if (!card || card.id !== 'starter') {
 		return;
@@ -705,27 +996,29 @@ function mkRing(pct, accent, track) {
 }
 
 function mkStatus(pct) {
-	if (pct < 10) {
-		return { bg: '#FAEEDA', txt: '#854F0B', dot: '#BA7517', lbl: 'Very low - may seem inactive', tip: 'Aim for 1-5% to signal responsible activity to bureaus.' };
+	if (pct <= 10) {
+		return { bg: '#E8F5E9', txt: '#1B5E20', dot: '#2E7D32', lbl: '', tip: '' };
 	}
-	if (pct <= 30) {
-		return { bg: '#EAF3DE', txt: '#3B6D11', dot: '#639922', lbl: 'Excellent range', tip: 'Under 30% is the sweet spot. Your score thanks you.' };
+	if (pct < 30) {
+		return { bg: '#FFF9E6', txt: '#F57F17', dot: '#FBC02D', lbl: 'Caution Zone', tip: 'Getting close to the 30% threshold. Consider paying down soon.' };
 	}
-	if (pct <= 50) {
-		return { bg: '#FAEEDA', txt: '#854F0B', dot: '#BA7517', lbl: 'Moderate - try to reduce', tip: 'Pay down before your statement closes to lower reported utilization.' };
-	}
-	return { bg: '#FCEBEB', txt: '#A32D2D', dot: '#A32D2D', lbl: 'High utilization', tip: 'Above 50% can significantly drop your score. Pay down soon.' };
+	return { bg: '#FFEBEE', txt: '#C62828', dot: '#F05F57', lbl: 'Action Needed', tip: 'Above 30% can impact your credit score. Pay down your balance.' };
 }
 
 function renderStarterHealthMeter(pct, status) {
-	const mood = pct < 30 ? 'low' : pct <= 50 ? 'mid' : 'high';
-	const mascotClass = pct < 30 ? 'happy' : pct <= 50 ? 'neutral' : 'worried';
+	const mood = pct <= 10 ? 'low' : pct < 30 ? 'mid' : 'high';
+	// Mascot visual states: 0% -> sleep, 1-5% -> perfect, 6-29% -> happy, 30%+ -> worried
+	let mascotClass;
+	if (pct === 0) mascotClass = 'sleep';
+	else if (pct <= 5) mascotClass = 'perfect';
+	else if (pct < 30) mascotClass = 'happy';
+	else mascotClass = 'worried';
 	const catGraphic = getHealthCatGraphic(mascotClass);
-	const message = pct < 30
+	const message = pct <= 10
 		? "You're doing great!"
-		: pct <= 50
-			? 'Keep an eye on this'
-			: 'High usage - consider paying down balance';
+		: pct < 30
+			? ''
+			: 'Action needed - pay down your balance';
 	const r = 54;
 	const circ = 2 * Math.PI * r;
 	const fill = Math.max(0, Math.min(100, pct)) / 100 * circ;
@@ -756,32 +1049,113 @@ function renderStarterHealthMeter(pct, status) {
 }
 
 function getHealthCatGraphic(mood) {
+	// More expressive mouth based on mood
 	const mouth = mood === 'happy'
-		? '<path d="M39 58c2.6 3.2 7.1 4.1 11.5 4.1s8.9-.9 11.5-4.1" stroke="#111" stroke-width="3" stroke-linecap="round" fill="none"/>'
+		? '<path d="M39 58c2.6 3.2 7.1 4.1 11.5 4.1s8.9-.9 11.5-4.1" stroke="#A0825D" stroke-width="2.5" stroke-linecap="round" fill="none"/>'
 		: mood === 'neutral'
-			? '<path d="M40 60h21" stroke="#111" stroke-width="3" stroke-linecap="round" fill="none"/>'
-			: '<path d="M39 63c2.6-3.2 7.1-4.1 11.5-4.1s8.9.9 11.5 4.1" stroke="#111" stroke-width="3" stroke-linecap="round" fill="none"/>';
+			? '<path d="M40 60h21" stroke="#A0825D" stroke-width="2.5" stroke-linecap="round" fill="none"/>'
+			: '<path d="M39 64c2.6-3.5 7.1-4.5 11.5-4.5s8.9 1 11.5 4.5" stroke="#A0825D" stroke-width="2.5" stroke-linecap="round" fill="none"/>';
 
-	const brow = mood === 'worried'
-		? '<path d="M31 47l7-2M65 45l-7 2" stroke="#111" stroke-width="2.4" stroke-linecap="round"/>'
-		: '';
+	// More expressive eyebrows
+	const brows = mood === 'worried'
+		? '<path d="M31 47l7-2M65 45l-7 2" stroke="#A0825D" stroke-width="2.4" stroke-linecap="round"/>'
+		: mood === 'happy'
+			? '<path d="M31 46l5 1M65 46l-5 1" stroke="#A0825D" stroke-width="2.4" stroke-linecap="round"/>'
+			: '';
+
+	// Pupils / eyes and extras based on mood
+	const pupilOffset = mood === 'happy' ? 1 : mood === 'worried' ? -1 : 0;
+	let eyesMarkup = '';
+	let extraDecor = '';
+
+	if (mood === 'sleep') {
+		// closed eyes and Zzz
+		eyesMarkup = `
+			<!-- Closed Left Eye -->
+			<path d="M33 46c3-3 7-3 10 0" stroke="#A0825D" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+			<!-- Closed Right Eye -->
+			<path d="M55 46c3-3 7-3 10 0" stroke="#A0825D" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+		`;
+		extraDecor = `<text x="60" y="24" font-size="10" fill="#A0825D" opacity="0.85">Zzz</text>`;
+	} else if (mood === 'perfect') {
+		// sunglasses + thumbs/check badge
+		eyesMarkup = `
+			<!-- Sunglasses -->
+			<rect x="28" y="39" width="16" height="8" rx="2" fill="#2b2b2b"/>
+			<rect x="52" y="39" width="16" height="8" rx="2" fill="#2b2b2b"/>
+			<path d="M44 43h8" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>
+		`;
+		extraDecor = `<text x="70" y="74" font-size="12" fill="#1B5E20">✔</text>`;
+	} else {
+		// default open eyes (happy/neutral/worried)
+		eyesMarkup = `
+			<!-- Left Eye White -->
+			<circle cx="37" cy="45" r="6" fill="#fff"/>
+			<!-- Right Eye White -->
+			<circle cx="59" cy="45" r="6" fill="#fff"/>
+			<!-- Left Pupil -->
+			<circle cx="${37 + pupilOffset}" cy="45" r="3.5" fill="#4A3C2A"/>
+			<!-- Right Pupil -->
+			<circle cx="${59 + pupilOffset}" cy="45" r="3.5" fill="#4A3C2A"/>
+			<!-- Left Eye Shine -->
+			<circle cx="${35 + pupilOffset}" cy="43" r="1.5" fill="#fff"/>
+			<!-- Right Eye Shine -->
+			<circle cx="${57 + pupilOffset}" cy="43" r="1.5" fill="#fff"/>
+		`;
+	}
 
 	return `<svg class="hm-center-cat" viewBox="0 0 96 96" aria-hidden="true">
-		<path d="M20 36L25 17 40 27" fill="#c8b3a3" stroke="#111" stroke-width="4.2" stroke-linejoin="round"/>
-		<path d="M76 36L71 17 56 27" fill="#c8b3a3" stroke="#111" stroke-width="4.2" stroke-linejoin="round"/>
-		<path d="M27 24l10 6M69 24l-10 6" stroke="#f4d8cf" stroke-width="4.2" stroke-linecap="round"/>
-		<ellipse cx="48" cy="56" rx="31" ry="25" fill="#f8f8f8" stroke="#111" stroke-width="4.2"/>
-		<path d="M26 40c6-8 13-11 22-11s16 3 22 11" fill="none" stroke="#c8b3a3" stroke-width="10" stroke-linecap="round"/>
-		<circle cx="37" cy="52" r="5" fill="#111"/>
-		<circle cx="59" cy="52" r="5" fill="#111"/>
-		<path d="M14 55h13M69 55h13M14 61h13M69 61h13" stroke="#111" stroke-width="3.8" stroke-linecap="round"/>
-		<circle cx="31" cy="59" r="6.5" fill="#f9d7d0"/>
-		<circle cx="65" cy="59" r="6.5" fill="#f9d7d0"/>
-		<circle cx="29" cy="59" r="1.1" fill="#f2b9bc"/><circle cx="32" cy="57" r="1" fill="#f2b9bc"/><circle cx="35" cy="60" r="1" fill="#f2b9bc"/>
-		<circle cx="63" cy="59" r="1.1" fill="#f2b9bc"/><circle cx="66" cy="57" r="1" fill="#f2b9bc"/><circle cx="69" cy="60" r="1" fill="#f2b9bc"/>
-		<path d="M48 55l-2.1 2h4.2z" fill="#111"/>
+		<!-- Tail (wagging) - Big & Fluffy -->
+		<g class="cat-tail">
+			<!-- Main fluffy tail curve -->
+			<path d="M62 68Q72 52 76 28Q78 15 82 10" stroke="#A0825D" stroke-width="10" stroke-linecap="round" fill="none"/>
+			<!-- Fluffy segments to make it puffy -->
+			<circle cx="64" cy="66" r="6" fill="#A0825D" opacity="0.9"/>
+			<circle cx="69" cy="58" r="6.5" fill="#A0825D" opacity="0.9"/>
+			<circle cx="74" cy="48" r="7" fill="#A0825D" opacity="0.9"/>
+			<circle cx="77" cy="36" r="6.5" fill="#A0825D" opacity="0.9"/>
+			<circle cx="79" cy="22" r="6" fill="#A0825D" opacity="0.9"/>
+			<circle cx="80" cy="12" r="5.5" fill="#A0825D" opacity="0.9"/>
+			<!-- Fluffy side strands -->
+			<path d="M62 68Q68 60 72 50" stroke="#C8A882" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.7"/>
+			<path d="M65 65Q73 50 78 32" stroke="#C8A882" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.7"/>
+		</g>
+		<!-- Left Ear -->
+		<path d="M20 36L25 17 40 27" fill="#A0825D"/>
+		<path d="M27 24l10 6" stroke="#C8A882" stroke-width="4.2" stroke-linecap="round" fill="none"/>
+		<!-- Right Ear -->
+		<path d="M76 36L71 17 56 27" fill="#A0825D"/>
+		<path d="M69 24l-10 6" stroke="#C8A882" stroke-width="4.2" stroke-linecap="round" fill="none"/>
+		<!-- Body (round) -->
+		<ellipse cx="48" cy="76" rx="32" ry="26" fill="#FFD9EA"/>
+		<!-- Head -->
+		<ellipse cx="48" cy="48" rx="22" ry="18" fill="#FFD9EA"/>
+		<!-- Snout -->
+		<path d="M26 40c6-8 13-11 22-11s16 3 22 11" fill="none" stroke="#C8A882" stroke-width="10" stroke-linecap="round"/>
+		${eyesMarkup}
+		<!-- Whiskers Left -->
+		<path d="M14 55h13M14 61h13" stroke="#A0825D" stroke-width="3.8" stroke-linecap="round"/>
+		<!-- Whiskers Right -->
+		<path d="M69 55h13M69 61h13" stroke="#A0825D" stroke-width="3.8" stroke-linecap="round"/>
+		<!-- Left Cheek -->
+		<circle cx="31" cy="52" r="6.5" fill="#FFCCDD"/>
+		<circle cx="29" cy="52" r="1.1" fill="#FFB8CC"/><circle cx="32" cy="50" r="1" fill="#FFB8CC"/><circle cx="35" cy="53" r="1" fill="#FFB8CC"/>
+		<!-- Right Cheek -->
+		<circle cx="65" cy="52" r="6.5" fill="#FFCCDD"/>
+		<circle cx="63" cy="52" r="1.1" fill="#FFB8CC"/><circle cx="66" cy="50" r="1" fill="#FFB8CC"/><circle cx="69" cy="53" r="1" fill="#FFB8CC"/>
+		<!-- Nose -->
+		<path d="M48 48l-2.1 2h4.2z" fill="#A0825D"/>
+		<!-- Mouth -->
 		${mouth}
-		${brow}
+		<!-- Eyebrows -->
+		${brows}
+		<!-- Left Paw -->
+		<ellipse cx="28" cy="99" rx="6" ry="6.5" fill="#A0825D"/>
+		<ellipse cx="28" cy="99" rx="4" ry="4.5" fill="#FFE0EA"/>
+		<!-- Right Paw -->
+		<ellipse cx="68" cy="99" rx="6" ry="6.5" fill="#A0825D"/>
+		<ellipse cx="68" cy="99" rx="4" ry="4.5" fill="#FFE0EA"/>
+		${extraDecor}
 	</svg>`;
 }
 
@@ -807,6 +1181,170 @@ function renderCategoryName(name, accentColor) {
 			<div class="cn-main">${escapeHTML(main)}</div>
 			<div class="cn-sub">(${escapeHTML(sub)})</div>
 		</div>`;
+}
+
+function getCategoryIcon(categoryName) {
+	return CATEGORY_ICONS[categoryName] || '💳';
+}
+
+function showCatPopup(cardId, catAb, text) {
+	const panel = document.querySelector(`.pnl-${cardId}`);
+	if (!panel) return;
+	const target = panel.querySelector(`.ck[data-cat="${catAb}"]`);
+	if (!target) return;
+
+	const popup = document.createElement('div');
+	popup.className = 'cat-popup';
+	popup.textContent = text;
+	// position relative to target
+	popup.style.position = 'absolute';
+	popup.style.transform = 'translateX(-50%) scale(.88)';
+
+	// ensure target is positioned relative
+	if (getComputedStyle(target).position === 'static') {
+		target.style.position = 'relative';
+	}
+
+	target.appendChild(popup);
+
+	setTimeout(() => {
+		if (popup && popup.parentNode) popup.parentNode.removeChild(popup);
+	}, 900);
+}
+
+function launchConfettiAt(element, count = 28) {
+	if (!element) return;
+	// play sparkling glitter sound for celebration
+	try { playSparkleSound(); } catch (e) {}
+	const rect = element.getBoundingClientRect();
+	const cx = rect.left + rect.width / 2;
+	const cy = rect.top + rect.height / 2;
+
+	const canvas = document.createElement('canvas');
+	canvas.className = 'confetti-canvas';
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+	document.body.appendChild(canvas);
+
+	const ctx = canvas.getContext('2d');
+	const colors = ['#ff4b5c','#ffb86b','#ffd86b','#7be495','#5ad0f5','#9b88ff'];
+	const pieces = [];
+
+	for (let i=0;i<count;i++) {
+		pieces.push({
+			x: cx,
+			y: cy,
+			sx: (Math.random()-0.5)*10,
+			sy: - (Math.random()*7+2),
+			size: Math.random()*8+6,
+			angle: Math.random()*360,
+			color: colors[Math.floor(Math.random()*colors.length)],
+			life: 0
+		});
+	}
+
+	let frame = 0;
+	function step() {
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+		for (let p of pieces) {
+			p.life += 1;
+			p.x += p.sx;
+			p.y += p.sy + p.life*0.12;
+			p.angle += p.sx*2;
+			ctx.save();
+			ctx.translate(p.x,p.y);
+			ctx.rotate(p.angle*Math.PI/180);
+			ctx.fillStyle = p.color;
+			ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
+			ctx.restore();
+		}
+		frame++;
+		if (frame < 120) requestAnimationFrame(step);
+		else {
+			if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
+		}
+	}
+	requestAnimationFrame(step);
+}
+
+function playSparkleSound() {
+	try {
+		const ctx = new (window.AudioContext || window.webkitAudioContext)();
+		const master = ctx.createGain();
+		master.gain.value = 0.6;
+		master.connect(ctx.destination);
+		const now = ctx.currentTime;
+		// create a quick shower of high, short tones
+		for (let i = 0; i < 10; i++) {
+			const o = ctx.createOscillator();
+			const g = ctx.createGain();
+			// lower base frequencies for a warmer sparkle
+			const base = 500 + Math.random() * 800;
+			const detune = (Math.random() - 0.5) * 60;
+			o.type = Math.random() > 0.7 ? 'triangle' : 'sine';
+			o.frequency.setValueAtTime(base, now + i * 0.03);
+			o.detune.value = detune;
+			// short, softer envelope
+			g.gain.setValueAtTime(0.0001, now + i * 0.03);
+			g.gain.exponentialRampToValueAtTime(0.06 + Math.random() * 0.06, now + i * 0.03 + 0.01);
+			g.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.03 + 0.22);
+			o.connect(g); g.connect(master);
+			o.start(now + i * 0.03);
+			o.stop(now + i * 0.03 + 0.22 + Math.random() * 0.06);
+		}
+		// close context after playback
+		setTimeout(() => { try { ctx.close(); } catch (e) {} }, 1200);
+	} catch (e) {
+		// ignore audio errors
+	}
+}
+
+function playBonkSound() {
+	try {
+		const ctx = new (window.AudioContext || window.webkitAudioContext)();
+		const o = ctx.createOscillator();
+		const g = ctx.createGain();
+		o.type = 'sine';
+		const now = ctx.currentTime;
+		// start a low 'bonk' frequency sweep
+		o.frequency.setValueAtTime(120, now);
+		o.frequency.exponentialRampToValueAtTime(50, now + 0.18);
+		g.gain.setValueAtTime(0.0001, now);
+		g.gain.exponentialRampToValueAtTime(0.18, now + 0.02);
+		g.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+		o.connect(g); g.connect(ctx.destination);
+		o.start(now);
+		o.stop(now + 0.25);
+		// close context later to free resources
+		setTimeout(() => { try { ctx.close(); } catch (e) {} }, 600);
+	} catch (e) {
+		// fallback: try to play a short beep via Audio element (not provided)
+	}
+}
+
+function animateShake(cardId, catAb) {
+	const panel = document.querySelector(`.pnl-${cardId}`);
+	if (!panel) return;
+	const target = panel.querySelector(`.ck[data-cat="${catAb}"]`);
+	if (!target) return;
+	target.classList.remove('shake');
+	void target.offsetWidth; // reflow
+	target.classList.add('shake');
+	setTimeout(() => target.classList.remove('shake'), 700);
+}
+
+function animateCatIcon(cardId, catAb) {
+	const panel = document.querySelector(`.pnl-${cardId}`);
+	if (!panel) return;
+	const target = panel.querySelector(`.ck[data-cat="${catAb}"]`);
+	if (!target) return;
+	const icon = target.querySelector('.cat-icon');
+	if (!icon) return;
+	icon.classList.remove('pop');
+	// force reflow to restart animation
+	void icon.offsetWidth;
+	icon.classList.add('pop');
+	setTimeout(() => icon.classList.remove('pop'), 800);
 }
 
 function getCategoryLabel(cat) {
@@ -1027,6 +1565,41 @@ function renderTravelInsights(card) {
 	</div>`;
 }
 
+function renderStarterStreakBar(c, cc, cpct) {
+	const pct = Math.round(c.used / c.limit * 100);
+	const maxTarget = 30;
+	const categoryOverLimit = c.cats.some((cat) => Number(cat.spent) > Number(cat.lim));
+	const cardOverLimit = Number(c.used) > Number(c.limit);
+	const streakBroken = categoryOverLimit || cardOverLimit;
+	const overLimit = cardOverLimit || categoryOverLimit;
+	const safePct = streakBroken ? 0 : Math.max(0, Math.min(100, Math.round(((maxTarget - pct) / maxTarget) * 100)));
+	const goalText = streakBroken ? (overLimit ? 'Streak broken - over limit' : 'Streak broken') : 'Streak active';
+	const chipLabel = streakBroken ? '💔 Credit Streak' : '🔥 Credit Streak';
+
+	return `<div class="streak-sn">
+		<div class="streak-billing">
+			<div>
+				<div class="sl" style="color:#9a5a2c;margin-bottom:4px;">Billing cycle</div>
+				<div class="cd" style="color:${cc};">${c.daysLeft} days left</div>
+				<div class="streak-renew">until renewal</div>
+			</div>
+			<div class="streak-cycle">
+				<div class="streak-cycle-label">Cycle used</div>
+				<div class="streak-cycle-value">${cpct}%</div>
+			</div>
+		</div>
+		<div class="streak-note">Pay on time. Keep usage under <strong>30%</strong>.</div>
+		<div class="streak-head">
+			<div class="streak-chip ${streakBroken ? 'broken' : ''}" data-card="${c.id}" style="--glow:0;">
+				<span class="streak-fire" data-fire="${c.id}">🔥</span>
+				<span class="streak-label">${chipLabel}</span>
+			</div>
+			<div class="streak-goal ${streakBroken ? 'broken' : ''}">${goalText}</div>
+		</div>
+		<div class="streak-track"><div class="streak-fill ${streakBroken ? 'broken' : ''}" style="width:${safePct}%;"></div></div>
+	</div>`;
+}
+
 function renderPanel(c) {
 	const pct = Math.round(c.used / c.limit * 100);
 	const cpct = Math.round((c.cycleDays - c.daysLeft) / c.cycleDays * 100);
@@ -1048,15 +1621,16 @@ function renderPanel(c) {
 		const categoryPoints = (c.loopPointsMap && c.loopPointsMap[cat.nm]) || 0;
 		const rewardLabel = c.isPoints ? 'Points earned' : 'Rewards earned';
 		const labelValue = getCategoryLabel(cat);
+		const categoryIcon = getCategoryIcon(cat.nm);
 		const categoryActions = `<div class="grocery-inline">
 				<div class="gctrl">
 					<input class="gi" id="${inputId}" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Amount ($)" />
-					<button class="gb" onclick="logCategorySpend('${c.id}', '${cat.nm}', '${inputId}')" style="background:${c.accent};">Add</button>
+					<button class="gb${cp > 70 ? ' warning' : ''}" onclick="logCategorySpend('${c.id}', '${cat.nm}', '${inputId}')" style="background:${cp > 70 ? '#FFD54A' : c.accent}; color:${cp > 70 ? '#2b2b00' : '#fff'}">Add</button>
 				</div>
 				<div class="gp" style="color:${c.tS};">${rewardLabel}: <strong style="color:${c.tP};">${categoryPoints}</strong></div>
 			</div>`;
 
-		return `<div class="ck" style="background:${c.catBg};border:0.5px solid ${c.brd};">
+		return `<div class="ck" data-cat="${cat.ab}" ${cp >= 75 ? 'data-near-limit' : ''} style="background:${c.catBg};border:0.5px solid ${c.brd};">
 			<div class="ci">
 				<div class="cx" style="background:${bc}25;color:${bc};">${cat.ab}</div>
 				${over
@@ -1064,6 +1638,7 @@ function renderPanel(c) {
 					: `<span class="ctag" style="background:${c.accent}20;color:${c.accent};">${cat.extra}</span>`
 				}
 			</div>
+			<div class="cat-icon">${categoryIcon}</div>
 			${renderCategoryName(labelValue, c.tS)}
 			<div class="ca" style="color:${c.tP};">${amt}</div>
 			<div class="cf" style="color:${c.tT};">of ${lmt}</div>
@@ -1079,9 +1654,7 @@ function renderPanel(c) {
 		</button>
 		<div id="io-${c.id}" style="margin-top:10px;"></div>`;
 
-	const sectionAfterCycle = isTravel
-		? `<div class="sl" style="color:${c.tT};margin-bottom:7px;">Travel insights</div>${renderTravelInsights(c)}`
-		: `<div class="cg">${cats}</div><div class="sl" style="color:${c.tT};margin-bottom:7px;">Smart insights</div>${standardInsights}`;
+	const sectionAfterCycle = `<div class="cg">${cats}</div><div class="sl" style="color:${c.tT};margin-bottom:7px;">Smart insights</div>${standardInsights}`;
 
 	return `<div class="pnl pnl-${c.id}" id="pnl-${c.id}" style="${panelStyle}">
 		<div class="rs">
@@ -1091,11 +1664,8 @@ function renderPanel(c) {
 				? renderStarterHealthMeter(pct, s)
 				: `<div class="rw">${mkRing(pct, rc, c.track)}<div class="rc"><div class="rp" style="color:${rc};">${pct}%</div><div class="rm" style="color:${c.tS};">utilization</div></div></div>`
 			}
-			<div class="bdg" style="background:${s.bg};color:${s.txt};">
-				<svg width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3" fill="${s.dot}"/></svg>
-				${s.lbl}
-			</div>
-			<p class="tt" style="color:${c.tT};">${s.tip}</p>
+			${c.id === 'starter' ? '' : `<div class="bdg" style="background:${s.bg};color:${s.txt};">${s.lbl}</div>`}
+			${c.id === 'starter' ? '' : `<p class="tt" style="color:${c.tT};">${s.tip}</p>`}
 			<div class="limit-box" style="background:${c.cycleBg};border:0.5px solid ${c.brd};">
 				<div class="sl" style="color:${c.tT};margin-bottom:8px;">Set your credit limit</div>
 				${c.limitRange ? `<div style="font-size:11px;color:${c.tS};margin-bottom:8px;">Typical range: ${c.limitRange}</div>` : ''}
@@ -1105,8 +1675,12 @@ function renderPanel(c) {
 				</div>
 			</div>
 		</div>
-		${c.note ? `<div class="sn" style="background:${c.accent}18;color:${c.accent};">${c.note}</div>` : ''}
-		<div class="cc" style="background:${c.cycleBg};">
+		${c.id === 'starter' && c.note
+			? renderStarterStreakBar(c, cc, cpct)
+			: c.note
+				? `<div class="sn" style="background:${c.accent}18;color:${c.accent};">${c.note}</div>`
+				: ''}
+		${c.id !== 'starter' ? `<div class="cc" style="background:${c.cycleBg};">
 			<div class="ct">
 				<div>
 					<div class="sl" style="color:${c.tT};">Billing cycle</div>
@@ -1119,7 +1693,7 @@ function renderPanel(c) {
 				</div>
 			</div>
 			<div class="bt" style="background:${c.brdFill};"><div class="bf" style="width:${cpct}%;background:${cc};"></div></div>
-		</div>
+		</div>` : ''}
 		${sectionAfterCycle}
 	</div>`;
 }
@@ -1176,6 +1750,17 @@ function show(idx) {
 	}
 }
 
+function moveCreditStreakFire(cardId) {
+	const fire = document.querySelector(`.streak-fire[data-fire="${cardId}"]`);
+	if (!fire) {
+		return;
+	}
+	fire.classList.remove('move');
+	void fire.offsetWidth;
+	fire.classList.add('move');
+	window.setTimeout(() => fire.classList.remove('move'), 600);
+}
+
 function getRewardMultiplier(extraLabel) {
 	const match = extraLabel.match(/([\d.]+)%/);
 	if (!match) {
@@ -1210,9 +1795,40 @@ function logCategorySpend(cardId, categoryName, inputId) {
 		card.loopPointsMap = {};
 	}
 	card.loopPointsMap[categoryName] = (card.loopPointsMap[categoryName] || 0) + enteredAmount * getRewardMultiplier(category.extra);
+	moveCreditStreakFire(cardId);
 
 	renderPanels();
 	show(activeTabIndex);
+
+	// visual feedback: popup, confetti or bonk+shake on limits
+	try {
+		const catAb = category.ab;
+		const panel = document.querySelector(`.pnl-${cardId}`);
+		const target = panel && panel.querySelector(`.ck[data-cat="${category.ab}"]`);
+		// always pop the icon and show amount
+		showCatPopup(cardId, catAb, `+ $${enteredAmount.toFixed(2)}`);
+		animateCatIcon(cardId, catAb);
+
+		const categoryExceeded = Number(category.spent) >= Number(category.lim);
+		const cardExceeded = Number(card.used) >= Number(card.limit);
+
+		if (categoryExceeded || cardExceeded) {
+			// user reached/exceeded a limit — play bonk and shake the card
+			playBonkSound();
+			if (target) animateShake(cardId, catAb);
+			const msg = categoryExceeded && cardExceeded
+				? 'Category & card limit reached'
+				: categoryExceeded
+					? 'Category limit reached'
+					: 'Card limit reached';
+			showCatPopup(cardId, catAb, msg);
+		} else {
+			// celebratory confetti when under limits
+			if (target) launchConfettiAt(target);
+		}
+	} catch (e) {
+		// ignore visual errors
+	}
 }
 
 function addTravelTransaction(cardId, merchantInputId, amountInputId) {
@@ -1325,6 +1941,47 @@ async function getIns(id) {
 	}
 	btn.disabled = false;
 }
+
+// Streak tracker: intensify glow while under 30%, cool down on break
+window._streakState = window._streakState || {};
+function _updateStreaksTick() {
+	if (typeof CARDS === 'undefined') return;
+	CARDS.forEach((c) => {
+		const pct = Math.round(c.used / c.limit * 100);
+		const id = c.id;
+		const now = Date.now();
+		const state = window._streakState[id] || { ms: 0, last: now };
+		const low = pct < 30;
+		if (low) {
+			state.ms += Math.max(0, now - (state.last || now));
+		} else {
+			// cool down: reduce ms gradually to zero for smooth transition
+			state.ms = Math.max(0, state.ms - 1000);
+		}
+		state.last = now;
+		window._streakState[id] = state;
+
+		const chip = document.querySelector(`.streak-chip[data-card="${id}"]`);
+		if (!chip) return;
+
+		if (!low && state.ms <= 0) {
+			chip.classList.add('broken');
+			chip.style.setProperty('--glow', 0);
+			chip.textContent = '💔 Credit Streak';
+		} else {
+			chip.classList.remove('broken');
+			chip.textContent = '🔥 Credit Streak';
+			// map ms to glow intensity over demo duration (cap)
+			// Demo default: 5 minutes -> change for production to 7*24*60*60*1000 (7 days)
+			const DEMO_MS = 5 * 60 * 1000; // 5 minutes
+			const maxMs = DEMO_MS;
+			const glow = Math.min(1, state.ms / maxMs);
+			chip.style.setProperty('--glow', String(+glow.toFixed(3)));
+		}
+	});
+}
+setInterval(_updateStreaksTick, 1000);
+_updateStreaksTick();
 
 show(0);
 
