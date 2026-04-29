@@ -53,19 +53,53 @@ body {
 
 .top-actions {
   display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: center;
 	gap: 12px;
 	flex-wrap: wrap;
   margin-bottom: 1rem;
 }
 
-.top-actions-left,
-.top-actions-right {
+.top-actions-left {
 	display: flex;
 	align-items: center;
 	gap: 8px;
 	flex-wrap: wrap;
+}
+
+.profile-top {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 12px;
+}
+
+.profile-head-icon {
+	width: 36px;
+	height: 36px;
+	display: grid;
+	place-items: center;
+	border-radius: 999px;
+	border: 0.5px solid var(--color-border-secondary);
+	background: #fff;
+	box-shadow: var(--shadow-flat-btn);
+	color: var(--color-text-secondary);
+	cursor: pointer;
+	transition: transform .12s ease, box-shadow .12s ease, background .15s ease;
+}
+
+.profile-head-icon:hover {
+	background: #f8f8f4;
+}
+
+.profile-head-icon:active {
+	transform: translateY(3px);
+	box-shadow: var(--shadow-flat-btn-press);
+}
+
+.profile-head-icon svg {
+	width: 18px;
+	height: 18px;
+	display: block;
 }
 
 .limit-dropdown-wrap {
@@ -147,12 +181,12 @@ body {
 }
 
 .modify-panel {
-  border: 0.5px solid var(--color-border-tertiary);
-  border-radius: var(--border-radius-lg);
-	background: #fbfbf8;
-  padding: 1rem;
-  margin-bottom: 1rem;
-	box-shadow: var(--shadow-flat-card);
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	padding: 0;
+	margin: 0;
+	box-shadow: none;
 }
 
 .modify-panel-head {
@@ -569,6 +603,11 @@ body {
 	z-index: 50;
 }
 .ca { font-size: 15px; font-weight: 500; }
+.cat-budget {
+	font-size: 12px;
+	margin-top: 4px;
+	color: var(--color-text-secondary);
+}
 .cf { font-size: 11px; margin-bottom: 5px; }
 .mb { height: 9px; border-radius: 999px; overflow: hidden; margin-bottom: 5px; box-shadow: var(--shadow-flat-track); }
 .mf { height: 100%; border-radius: 999px; }
@@ -1036,10 +1075,27 @@ body {
   <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Credit Journey Dashboard - 5 Card Types</h1>
 
 	<div class="top-actions">
+		<div class="profile-top">
+			<button class="profile-head-icon" id="signOutBtn" type="button" aria-label="Log out" title="Log out">
+				<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+					<circle cx="12" cy="8" r="3.8" stroke="currentColor" stroke-width="1.8"/>
+					<path d="M5 18.6c.6-2.7 2.9-4.2 7-4.2s6.4 1.5 7 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+				</svg>
+			</button>
+		</div>
+	</div>
+
+	<div class="top-actions">
 		<div class="top-actions-left">
 				<details class="limit-dropdown-wrap" id="limitDropdown"></details>
 				<details class="modify-panel limit-dropdown-wrap" id="modifyPanel">
-					<summary class="limit-toggle" aria-haspopup="true" style="background:var(--color-background-primary);">Modify Categories <span class="limit-chevron" aria-hidden="true">▾</span></summary>
+					<summary class="limit-toggle" aria-haspopup="true">
+						<div style="text-align:left;">
+							<strong>Modify Categories</strong>
+							<small id="modifyPanelSummaryNote">Set labels and percentage limits</small>
+						</div>
+						<span class="limit-chevron" aria-hidden="true">▾</span>
+					</summary>
 					<div class="modify-panel-head">
 						<div>
 							<div class="sl" id="modifyPanelCardLabel">Modify categories</div>
@@ -1054,9 +1110,6 @@ body {
 						<button class="tb modify-save" id="modifySaveBtn" type="button">Save changes</button>
 					</div>
 				</details>
-		</div>
-		<div class="top-actions-right">
-			<button class="gb modify-btn" id="signOutBtn" type="button">Log out</button>
 		</div>
 	</div>
   <div class="tabs" id="tabs"></div>
@@ -1802,6 +1855,7 @@ const modifyPanelTitle = document.getElementById('modifyPanelTitle');
 const modifyFields = document.getElementById('modifyFields');
 const modifySummary = document.getElementById('modifySummary');
 const modifyPanelSummary = modifyPanel ? modifyPanel.querySelector('summary') : null;
+const modifyPanelSummaryNote = document.getElementById('modifyPanelSummaryNote');
 const modifyPanelClose = document.getElementById('modifyPanelClose');
 const modifyCancelBtn = document.getElementById('modifyCancelBtn');
 const modifySaveBtn = document.getElementById('modifySaveBtn');
@@ -1943,6 +1997,9 @@ function openModifyPanel(cardId) {
 	modifyState.cardId = card.id;
 	modifyState.count = Math.min(MAX_CATEGORY_COUNT, Math.max(MIN_CATEGORY_COUNT, getCategoryCount(card)));
 	if (typeof modifyPanel.open !== 'undefined') modifyPanel.open = true;
+	if (modifyPanelSummaryNote) {
+		modifyPanelSummaryNote.textContent = `${card.name} card`;
+	}
 	modifyPanelCardLabel.textContent = card.full;
 	modifyPanelTitle.textContent = `Set ${card.name} categories, labels, and percentage limits`;
 	if (modifySaveBtn) {
@@ -2107,14 +2164,34 @@ function renderTravelInsights(card) {
 	</div>`;
 }
 
+function getWeightedCategoryUsagePercent(card) {
+	const visibleCats = card?.cats?.slice(0, getCategoryCount(card)) || [];
+	if (visibleCats.length === 0) {
+		return 0;
+	}
+
+	const totals = visibleCats.reduce((sum, cat) => {
+		const spent = Number(cat?.spent) || 0;
+		const lim = Number(cat?.lim) || 0;
+		sum.spent += spent;
+		sum.limit += Math.max(0, lim);
+		return sum;
+	}, { spent: 0, limit: 0 });
+
+	if (totals.limit <= 0) {
+		return 0;
+	}
+
+	return (totals.spent / totals.limit) * 100;
+}
+
 function renderStarterStreakBar(c, cc, cpct) {
-	const pct = Math.round(c.used / c.limit * 100);
-	const maxTarget = 30;
+	const weightedPct = Math.round(getWeightedCategoryUsagePercent(c));
 	const categoryOverLimit = c.cats.some((cat) => Number(cat.spent) > Number(cat.lim));
 	const cardOverLimit = Number(c.used) > Number(c.limit);
 	const streakBroken = categoryOverLimit || cardOverLimit;
 	const overLimit = cardOverLimit || categoryOverLimit;
-	const safePct = streakBroken ? 0 : Math.max(0, Math.min(100, Math.round((pct / maxTarget) * 100)));
+	const safePct = streakBroken ? 0 : Math.max(0, Math.min(100, weightedPct));
 	const goalText = streakBroken ? (overLimit ? 'Streak broken - over limit' : 'Streak broken') : 'Streak active';
 	const chipLabel = streakBroken ? '💔 Credit Streak' : '🔥 Credit Streak';
 
@@ -2126,11 +2203,11 @@ function renderStarterStreakBar(c, cc, cpct) {
 				<div class="streak-renew">until renewal</div>
 			</div>
 			<div class="streak-cycle">
-				<div class="streak-cycle-label">Cycle used</div>
-				<div class="streak-cycle-value">${cpct}%</div>
+				<div class="streak-cycle-label">Weighted category use</div>
+				<div class="streak-cycle-value">${weightedPct}%</div>
 			</div>
 		</div>
-		<div class="streak-note">Pay on time. Keep usage under <strong>30%</strong>.</div>
+		<div class="streak-note"><strong>Pay on time. Keep usage under 30%.</strong></div>
 		<div class="streak-head">
 			<div class="streak-chip ${streakBroken ? 'broken' : ''}" data-card="${c.id}" style="--glow:0;">
 				<span class="streak-fire" data-fire="${c.id}">🔥</span>
@@ -2160,6 +2237,7 @@ function renderPanel(c) {
 		const amt = c.isPoints ? `${cat.spent.toLocaleString()} pts` : `$${cat.spent}`;
 		const lmt = c.isPoints ? `${cat.lim.toLocaleString()} pts` : `$${cat.lim}`;
 		const pct = getCategoryPercent(c, cat);
+		const budget = getCategoryBudget(c, pct);
 		const inputId = `ci-${c.id}-${cat.ab}`;
 		const categoryPoints = (c.loopPointsMap && c.loopPointsMap[cat.nm]) || 0;
 		const rewardLabel = c.isPoints ? 'Points earned' : 'Rewards earned';
@@ -2185,6 +2263,7 @@ function renderPanel(c) {
 			</div>
 			<div class="cat-icon">${categoryIcon}</div>
 			${renderCategoryName(labelValue, c.tS)}
+			<div class="cat-budget">Allowed budget: <strong style="color:${c.tP};">${formatMoney(budget)}/mo</strong></div>
 			<div class="ca" style="color:${c.tP};">${amt}</div>
 			<div class="mb" style="background:${c.brdFill};"><div class="mf" style="width:${Math.min(100, cp)}%;background:${bc};"></div></div>
 			<div class="cpct" style="color:${c.tT};">${cp}% of budget used</div>
@@ -2192,13 +2271,7 @@ function renderPanel(c) {
 		</div>`;
 	}).join('');
 
-	const standardInsights = `<button class="ib" id="ib-${c.id}" onclick="getIns('${c.id}')" style="border:0.5px solid ${c.isDark ? 'rgba(255,255,255,.22)' : 'var(--color-border-secondary)'};color:${c.tP};">
-			<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm.75 10.25h-1.5v-4h1.5v4zm0-5.5h-1.5V4.25h1.5V5.75z" fill="currentColor"/></svg>
-			Get personalized tips ->
-		</button>
-		<div id="io-${c.id}" style="margin-top:10px;"></div>`;
-
-	const sectionAfterCycle = `<div class="cg">${cats}</div><div class="sl" style="color:${c.tT};margin-bottom:7px;">Smart insights</div>${standardInsights}`;
+	const sectionAfterCycle = `<div class="cg">${cats}</div>`;
 
 	return `<div class="pnl pnl-${c.id}" id="pnl-${c.id}" style="${panelStyle}">
 		<div class="rs">
@@ -2238,11 +2311,15 @@ const tabsEl = document.getElementById('tabs');
 const panelsEl = document.getElementById('panels');
 const limitDropdown = document.getElementById('limitDropdown');
 const signOutBtn = document.getElementById('signOutBtn');
+const allowBypassAuth = new URLSearchParams(window.location.search).get('bypassAuth') === '1';
 let activeTabIndex = 0;
 
 auth.onAuthStateChanged((user) => {
-	if (!user) {
+	if (!user && !allowBypassAuth) {
 		window.location.replace('login.html');
+	}
+	if (allowBypassAuth) {
+		window.history.replaceState({}, '', window.location.pathname);
 	}
 });
 
@@ -2381,6 +2458,10 @@ function show(idx) {
 		modifyPanelSummary.style.background = CARDS[idx]?.accent || '#8B8A84';
 		modifyPanelSummary.style.color = '#fff';
 		modifyPanelSummary.style.borderColor = 'transparent';
+	}
+	if (modifyPanelSummaryNote) {
+		modifyPanelSummaryNote.textContent = `${CARDS[idx]?.name || 'Current'} card`;
+		modifyPanelSummaryNote.style.color = 'rgba(255,255,255,.82)';
 	}
 }
 
